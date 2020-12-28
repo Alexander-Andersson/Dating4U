@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Dating4U.Models;
 using DataLayer.Models;
 
 namespace DataLayer.DatabaseContext
@@ -15,5 +14,6 @@ namespace DataLayer.DatabaseContext
         }
 
         public DbSet<User> User { get; set; }
+        public DbSet<Friends> Friends { get; set; }
     }
 }

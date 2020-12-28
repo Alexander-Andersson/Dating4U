@@ -14,7 +14,5 @@ namespace DataLayer.Models
         public int Age { get; set; }
         public string Gender { get; set; }
         public string Description { get; set; }
-        public List<User> Friends { get; set; }
-        public int MyPropery { get; set; }
     }
 }
