@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using DataLayer.DatabaseContext;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace Dating4U.Controllers
 {
@@ -13,14 +16,17 @@ namespace Dating4U.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly UserDbContext _context;
+
+        public HomeController(ILogger<HomeController> logger, UserDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            return View(await _context.User.ToListAsync());
         }
 
         public IActionResult Privacy()
