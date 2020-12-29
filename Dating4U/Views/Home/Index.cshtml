@@ -3,8 +3,7 @@
 @inject UserManager<IdentityUser> UserManager
 @using DataLayer.Models
 
-@{List<User> list = new List<User>();}
-@{list =  IEnumerable<DataLayer.Models.User>}
+@model IEnumerable<DataLayer.Models.User>
 
         @{
             ViewData["Title"] = "Home Page";

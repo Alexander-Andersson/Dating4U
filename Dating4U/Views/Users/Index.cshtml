@@ -1,65 +1,128 @@
-﻿@model IEnumerable<DataLayer.Models.User>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@using DataLayer.Models
+
+@model IEnumerable<DataLayer.Models.User>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Min profil";
+
+    User _user = new User();
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.UserName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Age)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Gender)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Age)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Gender)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+@foreach (var item in Model)
+{
+    if (item.UserName.Equals(User.Identity.Name))
+    {
+        _user = item;
+    }
 }
-    </tbody>
-</table>
+@{ 
+    string name = _user.FirstName + " " + _user.LastName;
+    string age = _user.Age.ToString() + " år gammal";
+}
+<h1 id="HeaderText">@name</h1>
+
+<div class="StoraDiven">
+    <div class="BildochText">
+        <img id="bild" src="@_user.ProfilePicture" />
+        <div>
+            <h4>Namn</h4>
+            <p class="ProfilText">@name</p>
+        </div>
+        <div>
+            <h4>Ålder</h4>
+            <p class="ProfilText">@age</p>
+        </div>
+        <div>
+            <h4>Kön</h4>
+            <p class="ProfilText">@_user.Gender</p>
+        </div>
+        <div>
+            <h4>Om mig</h4>
+            <p class="ProfilText">@_user.Description</p>
+        </div>
+        <div class="Friends">
+            <h4>Vänner</h4>
+            <ul>
+                <li>
+                    Vän 1
+                </li>
+                <li>
+                    Vän 2
+                </li>
+                <li>
+                    Vän 3
+                </li>
+                <li>
+                    Vän 4
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="Väggen">
+        <h4>Vägg</h4>
+        <textarea rows = "5" cols = "60" name = "description"></textarea><input type="submit" value="Skicka Meddelande" id="MessageBtn" />
+        <div class="TheWall">
+            
+        </div>
+    </div>
+</div>
+<style>
+    #HeaderText{
+        text-align: center;
+        margin-bottom:5%;
+    }
+    .ProfilText {
+
+    }
+    .StoraDiven{
+        display: flex;
+    }
+    .BildochText{
+        width: 30%;
+        height: auto;
+    }
+    .InfoDiven{
+        width: 30%;
+        height: auto;
+    }
+    .Väggen{
+        width: 60%;
+        height: auto;
+        margin-left: 5%;
+    }
+    .TheWall{
+        width: 100%;
+        height: 200px;
+        margin-top: 3%;
+        border:solid;
+        border-radius: 1em;
+    }
+    .Friends{
+        border: solid;
+        border-radius: 1em;
+    }
+    ul{
+        list-style: none;
+    }
+    #bild{
+        max-width: 100%;
+        max-height: 50%;
+    }
+    .MessageBtn{
+        background-color: blue;
+        border: solid;
+        border-color: black;
+        border-radius: 2em;
+    }
+    /*#MeddelandeInput {
+        width: 72.5%;
+        height: 3em;
+        margin-right: 3%;
+        white-space: normal;
+    }*/
+    
+
+</style>
