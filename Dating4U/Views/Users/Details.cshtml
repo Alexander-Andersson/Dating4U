@@ -17,8 +17,11 @@
 
 @if (!SignInManager.IsSignedIn(User))
 {
-    <p>Vill du ta del av dessa läckra singlar?</p>
-    <a href="/Identity/Account/Register"><p>Sign up bitch hoe ass</p></a>
+    <div class="text-center">
+         <p>Vill du ta del av dessa läckra singlar?</p>
+         <a href="/Identity/Account/Register"><p>Registrera dig gratis</p></a>
+    </div>
+
 }
 
 else
@@ -71,6 +74,7 @@ else
         </div>
     </div>
 }
+
 <style>
     #HeaderText {
         text-align: center;
@@ -129,5 +133,4 @@ else
         border-color: black;
         border-radius: 2em;
     }
-
 </style>

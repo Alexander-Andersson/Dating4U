@@ -5,45 +5,112 @@
 
 @model IEnumerable<DataLayer.Models.User>
 
-        @{
-            ViewData["Title"] = "Home Page";
 
-            bool ProfilRegistrerad = false;
 
-            User _user = new User();
-        }
+@{
+    ViewData["Title"] = "Home Page";
 
-        @foreach (var item in Model)
-        {
-            if (SignInManager.IsSignedIn(User) && User.Identity.Name.Equals(item.UserName))
-            {
-                <p>Den finns va!</p>
-                ProfilRegistrerad = true;
-                _user = item;
-            }
-            else
-            {
-                <p>Den finns inte va :(</p>
-            }
+    bool ProfilRegistrerad = false;
 
-        }
+    User _user = new User();
 
-        @if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == false)
-        {
-            <h1>Du har inte fixat din profilsida ännu!</h1>
-            <h2>Klicka här för att komma dit: </h2>
-            <a href="Users/Create">Redigera profil</a>
-        }
+    List<User> listUser = new List<User>();
+    listUser = Model.ToList();
+}
 
-        else
-        {
-            <div class="text-center">
-                <h1 class="display-4">Hej @_user.FirstName här kommer massa snygga singlar</h1>
-            </div>
-        }
+@foreach (var item in Model)
+{
+    if (SignInManager.IsSignedIn(User) && User.Identity.Name.Equals(item.UserName))
+    {
+        ProfilRegistrerad = true;
+        _user = item;
+    }
+    else
+    {
+    }
 
-        @if (!SignInManager.IsSignedIn(User))
-        {
-            <p>Vill du ta del av dessa läckra singlar?</p>
-            <a href="Identity/Account/Register"><p>Sign up bitch hoe ass</p></a>
-        }
+}
+
+@if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == false)
+{
+    <div class="text-center">
+        <h1>Du har inte fixat din profilsida ännu!</h1>
+        <h2>Klicka här för att komma dit: </h2>
+        <a href="Users/Create">Redigera profil</a>
+    </div>
+
+}
+
+@if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == true)
+{
+    <div class="text-center">
+        <h1 class="display-4">Hej @_user.FirstName!</h1>
+        <h2 class="display-5">Här kommer massa snygga singlar</h2>
+    </div>
+}
+
+@if (!SignInManager.IsSignedIn(User))
+{
+    <div class="text-center">
+        <h1 class="display-4">Vill du ta del av dessa läckra singlar?</h1>
+    </div>
+}
+
+@if (listUser.Count == 0 && !SignInManager.IsSignedIn(User))
+{
+    
+<div class="text-center">
+    <p>Just nu finns inga heta singlar. Du är den första heta singeln!</p>
+    <a href="Identity/Account/Register"><p>Registrera dig gratis</p></a>
+</div>
+}
+
+@if (listUser.Count > 3)
+{
+    for (int i = 0; i < 4; i++)
+    {
+        <div class="profil">
+            <a href="/Users/Details/@listUser[i].Id "><img class="profilBild" src="@listUser[i].ProfilePicture" /></a>
+        </div>
+    }
+}
+
+else
+{
+    for (int i = 0; i < listUser.Count; i++)
+    {
+        <div class="profil">
+            <a href="/Users/Details/@listUser[i].Id"><img class="profilBild" src="@listUser[i].ProfilePicture" /></a>
+        </div>
+    }
+}
+
+
+
+<style>
+    .profil {
+        width: 25%;
+        height: auto;
+        margin-bottom: 2em;
+        margin-top: 2em;
+        float: left;
+    }
+
+    .profilBild {
+        display: block;
+        min-width: 50%;
+        min-height: 50%;
+        max-width: 70%;
+        max-height: 70%;
+        margin-right: auto;
+        margin-left: auto;
+        padding: 0;
+    }
+    .display-5 {
+        font-family: inherit;
+        font-size: 1.8rem;
+        font-weight: 300;
+        line-height: 1.2;
+    }
+    
+</style>

@@ -35,74 +35,83 @@
 
 @if (!SignInManager.IsSignedIn(User))
 {
-    <p>Vill du ta del av dessa läckra singlar?</p>
-    <a href="/Identity/Account/Register"><p>Sign up bitch hoe ass</p></a>
+<div class="text-center">
+    <p>Du måste logga in för att se din profil</p>
+    <a href="/Identity/Account/Login"><p>Logga in</p></a>
+    <br />
+    <p>Har du inget konto?</p>
+    <a href="/Identity/Account/Register"><p>Registrera dig</p></a>
+
+</div>
 }
 
 else if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == false)
 {
-    <h1>Du har inte fixat din profilsida ännu!</h1>
-    <h2>Klicka här för att komma dit: </h2>
-    <a href="/Users/Create">Skapa profil</a>
+    <div class="text-center">
+         <h1>Du har inte fixat din profilsida ännu!</h1>
+         <h2>Klicka här för att komma dit: </h2>
+         <a href="/Users/Create">Skapa profil</a>
+    </div>
 }
 
-else 
-{ 
-<h1 id="HeaderText">@name</h1>
+else
+{
+    <h1 id="HeaderText">@name</h1>
 
-<div class="StoraDiven">
-    <div class="BildochText">
-        <img id="bild" src="@_user.ProfilePicture" />
-        <div>
-            <h4>Namn</h4>
-            <p class="ProfilText">@name</p>
+    <div class="StoraDiven">
+        <div class="BildochText">
+            <img id="bild" src="@_user.ProfilePicture" />
+            <div>
+                <h4>Namn</h4>
+                <p class="ProfilText">@name</p>
+            </div>
+            <div>
+                <h4>Ålder</h4>
+                <p class="ProfilText">@age</p>
+            </div>
+            <div>
+                <h4>Kön</h4>
+                <p class="ProfilText">@_user.Gender</p>
+            </div>
+            <div>
+                <h4>Om mig</h4>
+                <p class="ProfilText">@_user.Description</p>
+            </div>
+            <div class="Friends">
+                <h4>Vänner</h4>
+                <ul>
+                    <li>
+                        Vän 1
+                    </li>
+                    <li>
+                        Vän 2
+                    </li>
+                    <li>
+                        Vän 3
+                    </li>
+                    <li>
+                        Vän 4
+                    </li>
+                </ul>
+            </div>
         </div>
-        <div>
-            <h4>Ålder</h4>
-            <p class="ProfilText">@age</p>
-        </div>
-        <div>
-            <h4>Kön</h4>
-            <p class="ProfilText">@_user.Gender</p>
-        </div>
-        <div>
-            <h4>Om mig</h4>
-            <p class="ProfilText">@_user.Description</p>
-        </div>
-        <div class="Friends">
-            <h4>Vänner</h4>
-            <ul>
-                <li>
-                    Vän 1
-                </li>
-                <li>
-                    Vän 2
-                </li>
-                <li>
-                    Vän 3
-                </li>
-                <li>
-                    Vän 4
-                </li>
-            </ul>
+        <div class="Väggen">
+            <h4>Vägg</h4>
+            <textarea rows="5" cols="60" name="description"></textarea><input type="submit" value="Skicka Meddelande" id="MessageBtn" />
+            <div class="TheWall">
+
+            </div>
+
+            <br />
+            <a href="@editProfileUrl">Redigera Profil</a>
+            <br />
+            <a href="/Identity/Account/Manage">Redigera Inloggningsuppgifter</a>
         </div>
     </div>
-    <div class="Väggen">
-        <h4>Vägg</h4>
-        <textarea rows="5" cols="60" name="description"></textarea><input type="submit" value="Skicka Meddelande" id="MessageBtn" />
-        <div class="TheWall">
-
-        </div>
-
-        <br />
-        <a href="@editProfileUrl">Redigera Profil</a>
-        <br />
-        <a href="/Identity/Account/Manage">Redigera Inloggningsuppgifter</a>
-    </div>
-</div>
 }
 <style>
     #HeaderText {
+        font-weight:normal;
         text-align: center;
         margin-bottom: 5%;
     }
@@ -159,12 +168,4 @@ else
         border-color: black;
         border-radius: 2em;
     }
-    /*#MeddelandeInput {
-        width: 72.5%;
-        height: 3em;
-        margin-right: 3%;
-        white-space: normal;
-    }*/
-
-
 </style>
