@@ -9,6 +9,8 @@
             ViewData["Title"] = "Home Page";
 
             bool ProfilRegistrerad = false;
+
+            User _user = new User();
         }
 
         @foreach (var item in Model)
@@ -17,6 +19,7 @@
             {
                 <p>Den finns va!</p>
                 ProfilRegistrerad = true;
+                _user = item;
             }
             else
             {
@@ -35,7 +38,7 @@
         else
         {
             <div class="text-center">
-                <h1 class="display-4">Hej här kommer massa snygga singlar</h1>
+                <h1 class="display-4">Hej @_user.FirstName här kommer massa snygga singlar</h1>
             </div>
         }
 
