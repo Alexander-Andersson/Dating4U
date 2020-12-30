@@ -1,12 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
-@using DataLayer.DatabaseContext
-@using DataLayer.Models;
-
-@*@model IEnumerable<DataLayer.Models.User>*@
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -21,57 +13,6 @@
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Dating4U</a>
 
-                <!--Om användaren har registrerat sin profil visa Min profil och Utforska-->
-                <!--Annars inte-->
-
-                @*@{
-                    bool ProfilRegistrerad = false;
-                }
-
-                @foreach (var item in Model)
-                {
-                    if (SignInManager.IsSignedIn(User) && User.Identity.Name.Equals(item.UserName))
-                    {
-                        ProfilRegistrerad = true;
-                    }
-                    else
-                    {
-                    }
-
-                }
-
-                @if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == true)
-                {
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                        <ul class="navbar-nav flex-grow-1">
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Min profil</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Utforska</a>
-                            </li>
-                        </ul>
-                        <partial name="_LoginPartial" />
-                    </div>
-                }
-
-                else
-                {
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                        <ul class="navbar-nav flex-grow-1">
-                        </ul>
-                        <partial name="_LoginPartial" />
-                    </div>
-                }*@
-
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -82,7 +23,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Min profil</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Utforska</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Explore">Utforska</a>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
@@ -102,11 +43,7 @@
             &copy; 2020 - Dating4U
         </div>
     </footer>
-    <style>
-        #4U{
-            color: red;
-        }
-    </style>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

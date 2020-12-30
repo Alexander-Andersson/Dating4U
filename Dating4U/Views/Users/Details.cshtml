@@ -1,54 +1,133 @@
-﻿@model DataLayer.Models.User
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@using DataLayer.Models
+
+@model DataLayer.Models.User
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Min profil";
 }
 
-<h1>Details</h1>
 
-<div>
-    <h4>User</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UserName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UserName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Age)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Age)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Gender)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Gender)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+@{
+    string name = Model.FirstName + " " + Model.LastName;
+    string age = Model.Age.ToString() + " år gammal";
+}
+
+@if (!SignInManager.IsSignedIn(User))
+{
+    <p>Vill du ta del av dessa läckra singlar?</p>
+    <a href="/Identity/Account/Register"><p>Sign up bitch hoe ass</p></a>
+}
+
+else
+{
+    <h1 id="HeaderText">@name</h1>
+
+    <div class="StoraDiven">
+        <div class="BildochText">
+            <img id="bild" src="@Model.ProfilePicture" />
+            <div>
+                <h4>Namn</h4>
+                <p class="ProfilText">@name</p>
+            </div>
+            <div>
+                <h4>Ålder</h4>
+                <p class="ProfilText">@age</p>
+            </div>
+            <div>
+                <h4>Kön</h4>
+                <p class="ProfilText">@Model.Gender</p>
+            </div>
+            <div>
+                <h4>Om mig</h4>
+                <p class="ProfilText">@Model.Description</p>
+            </div>
+            <div class="Friends">
+                <h4>Vänner</h4>
+                <ul>
+                    <li>
+                        Vän 1
+                    </li>
+                    <li>
+                        Vän 2
+                    </li>
+                    <li>
+                        Vän 3
+                    </li>
+                    <li>
+                        Vän 4
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="Väggen">
+            <h4>Vägg</h4>
+            <textarea rows="5" cols="60" name="description"></textarea><input type="submit" value="Skicka Meddelande" id="MessageBtn" />
+            <div class="TheWall">
+
+            </div>
+        </div>
+    </div>
+}
+<style>
+    #HeaderText {
+        text-align: center;
+        margin-bottom: 5%;
+    }
+
+    .ProfilText {
+        width: 100%;
+    }
+
+    .StoraDiven {
+        display: flex;
+    }
+
+    .BildochText {
+        width: 30%;
+        height: auto;
+    }
+
+    .InfoDiven {
+        width: 30%;
+        height: auto;
+    }
+
+    .Väggen {
+        width: 60%;
+        height: auto;
+        margin-left: 5%;
+    }
+
+    .TheWall {
+        width: 100%;
+        height: 200px;
+        margin-top: 3%;
+        border: solid;
+        border-radius: 1em;
+    }
+
+    .Friends {
+        border: solid;
+        border-radius: 1em;
+    }
+
+    ul {
+        list-style: none;
+    }
+
+    #bild {
+        max-width: 100%;
+        max-height: 50%;
+    }
+
+    .MessageBtn {
+        background-color: blue;
+        border: solid;
+        border-color: black;
+        border-radius: 2em;
+    }
+
+</style>

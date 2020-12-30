@@ -1,0 +1,69 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@using DataLayer.Models
+
+@model IEnumerable<DataLayer.Models.User>
+
+@{
+    ViewData["Title"] = "View";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{bool ProfilRegistrerad = false; }
+
+@foreach (var item in Model)
+{
+    if (SignInManager.IsSignedIn(User) && User.Identity.Name.Equals(item.UserName))
+    {
+        ProfilRegistrerad = true;
+    }
+}
+
+@if (!SignInManager.IsSignedIn(User))
+{
+    <p>Vill du ta del av dessa läckra singlar?</p>
+    <a href="/Identity/Account/Register"><p>Sign up bitch hoe ass</p></a>
+}
+
+else if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == false)
+{
+    <h1>Du har inte fixat din profilsida ännu!</h1>
+    <h2>Klicka här för att komma dit: </h2>
+    <a href="/Users/Create">Skapa profil</a>
+}
+
+else
+{
+    <h1>Ta chansen att hitta din nya señorita ;)</h1>
+
+
+    @foreach (var item in Model)
+    {
+        <div class="profil">
+            <a href="/Users/Details/@{@item.Id} "><img class="profilBild" src="@item.ProfilePicture" /></a>
+        </div>
+    }
+}
+
+
+
+<style>
+    .profil {
+        width: 20%;
+        height: auto;
+        margin-bottom: 2em;
+        float: left;
+    }
+
+    .profilBild {
+        display: block;
+        min-width: 50%;
+        min-height: 50%;
+        max-width: 50%;
+        max-height: 50%;
+        margin-right: auto;
+        margin-left: auto;
+        padding: 0;
+    }
+</style>

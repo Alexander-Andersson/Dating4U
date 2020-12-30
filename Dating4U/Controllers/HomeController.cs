@@ -29,6 +29,11 @@ namespace Dating4U.Controllers
             return View(await _context.User.ToListAsync());
         }
 
+        public async Task<IActionResult> Explore()
+        {
+            return View(await _context.User.ToListAsync());
+        }
+
         public IActionResult Privacy()
         {
             return View();

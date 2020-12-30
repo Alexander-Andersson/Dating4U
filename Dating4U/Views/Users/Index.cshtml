@@ -36,14 +36,14 @@
 @if (!SignInManager.IsSignedIn(User))
 {
     <p>Vill du ta del av dessa läckra singlar?</p>
-    <a href="Identity/Account/Register"><p>Sign up bitch hoe ass</p></a>
+    <a href="/Identity/Account/Register"><p>Sign up bitch hoe ass</p></a>
 }
 
 else if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == false)
 {
     <h1>Du har inte fixat din profilsida ännu!</h1>
     <h2>Klicka här för att komma dit: </h2>
-    <a href="Users/Create">Redigera profil</a>
+    <a href="/Users/Create">Skapa profil</a>
 }
 
 else 
