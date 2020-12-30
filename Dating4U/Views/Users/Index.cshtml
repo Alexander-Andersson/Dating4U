@@ -21,6 +21,7 @@
 @{ 
     string name = _user.FirstName + " " + _user.LastName;
     string age = _user.Age.ToString() + " år gammal";
+    string editProfileUrl = "/Users/Edit/" + _user.Id;
 }
 <h1 id="HeaderText">@name</h1>
 
@@ -63,10 +64,15 @@
     </div>
     <div class="Väggen">
         <h4>Vägg</h4>
-        <textarea rows = "5" cols = "60" name = "description"></textarea><input type="submit" value="Skicka Meddelande" id="MessageBtn" />
+        <textarea rows="5" cols="60" name="description"></textarea><input type="submit" value="Skicka Meddelande" id="MessageBtn" />
         <div class="TheWall">
-            
+
         </div>
+
+        <br />
+        <a href="@editProfileUrl">Redigera Profil</a>
+        <br />
+        <a href="/Identity/Account/Manage">Redigera Inloggningsuppgifter</a>
     </div>
 </div>
 <style>
