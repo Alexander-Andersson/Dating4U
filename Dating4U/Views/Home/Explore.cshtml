@@ -44,37 +44,106 @@ else
 {
     <div class="text-center">
         <h1>Ta chansen att hitta din nya señor eller señorita ;)</h1>
+        <input type="text" value="Sök på namn..." id="searchInput" />  &nbsp; <button id="searchBtn">Sök</button>
+        &nbsp; &nbsp; &nbsp; &nbsp;<button id="clearBtn">Rensa sök</button>
     </div>
 
-    <div class="storDiv">
-
+    <div id="storDiv">
         @foreach (var item in Model)
         {
+            string name = item.FirstName + " " + item.LastName;
             <div class="profil">
                 <a href="/Users/Details/@{@item.Id} "><img class="profilBild" src="@item.ProfilePicture" /></a>
+                <p id="user">@name</p>
+
             </div>
         }
-
     </div>
-}
 
-    <style>
-        .profil {
-            width: 25%;
-            height: auto;
-            margin-bottom: 2em;
-            margin-top: 2em;
-            float: right;
+        <!--Hämta datan från Models genom en C#-for-loop och en lista-->
+        <!--Varje id för varje tag ska få namnet på dess id + i-->
+
+    <!--Använd en for-loop i javascript, använd getElementById och kolla ifall
+        namnet som angivits är samma som namnet i getElementById.value-->
+    <!--Spara id, bildUrl och namn för alla profiler i en lokal temporär variabel i javascript-loopen-->
+
+    }
+
+
+<!--script för sökfunktion-->
+<!--Om input valideras korrekt tas storDiv bort och
+    en loop körs för att ta fram profilerna med det angivna namnet-->
+<script>
+
+    //SKRIPT FÖR ATT GE ANVÄNDAREN FEEDBACK PÅ INPUT VID SÖK AV NAMN//
+    //OCH FUNKTION FÖR ATT GENOMFÖRA FILTRERINGEN AV PROFILER
+    //Knapp-trycket sköts genom onInput-event
+
+    //KLICK SEARCH-BUTTON//
+    var searchKnapp = document.getElementById("searchBtn");
+    searchKnapp.addEventListener("click", checkInputKorrekt);
+
+    function checkInputKorrekt() {
+        //Variabel för att lagra textvärdet från searchInput
+        var inputNamnText = document.getElementById('searchInput').value;
+        var name = document.getElementById('textUsernameExplore').value;
+
+        console.log(inputNamnText);
+
+        //Namn måste vara längre än 2
+        //och endast innehålla bokstäver
+        if (/^([a-z]){3,}/i.test(inputNamnText)) {
+            console.log("Input korrekt")
+
+
+            //Checka så att namnet existerar
+
+            var tag = document.createElement("p");
+            var text = document.createTextNode(inputNamnText);
+            tag.appendChild(text);
+            var element = document.getElementById("storDiv");
+            element.appendChild(tag);
+
+            var i
+            for (i = 0; i < 20; i++)
+            {
+                var userNameId = document.getElementById('searchInput') + i;
+            }
+
+
+
+            $('.profil').remove();
+        }
+        else {
+            console.log("Input ej korrekt")
+            alert("Namnet måste vara minst 3 tecken och endast innehålla bokstäver")
         }
 
-        .profilBild {
-            display: block;
-            min-width: 50%;
-            min-height: 50%;
-            max-width: 50%;
-            max-height: 50%;
-            margin-right: auto;
-            margin-left: auto;
-            padding: 0;
-        }
-    </style>
+    }
+
+</script>
+
+<style>
+    #textUsernameExplore{
+        text-align: center;
+    }
+
+    .profil {
+        width: 25%;
+        height: auto;
+        margin-bottom: 2em;
+        margin-top: 2em;
+        float: right;
+    }
+
+    .profilBild {
+        display: block;
+        min-width: 50%;
+        min-height: 50%;
+        max-width: 50%;
+        max-height: 50%;
+        margin-right: auto;
+        margin-left: auto;
+        padding: 0;
+    }
+</style>
