@@ -10,8 +10,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@{bool ProfilRegistrerad = false; }
+@{bool ProfilRegistrerad = false;
+    List<User> listUser = new List<User>();
+    listUser = Model.ToList();    }
 
+<!--Checkar ifall användaren är inloggad och har fixat sin profil-->
+<!--Ifall namnet i AspNetUsers-tabellen är densamma som namnet i User-tabellen,
+    då dessa är löst ihopkopplade-->
 @foreach (var item in Model)
 {
     if (SignInManager.IsSignedIn(User) && User.Identity.Name.Equals(item.UserName))
@@ -20,6 +25,7 @@
     }
 }
 
+<!--Om användaren ej är inloggad-->
 @if (!SignInManager.IsSignedIn(User))
 {
     <div class="text-center">
@@ -31,100 +37,115 @@
     </div>
 }
 
+//Om användaren är inloggad men ej har satt upp sin profil
 else if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == false)
 {
-    <div class="text-center">
-        <h1>Du har inte fixat din profilsida ännu!</h1>
-        <h2>Klicka här för att komma dit: </h2>
-        <a href="/Users/Create">Skapa profil</a>
-    </div>
+<div class="text-center">
+    <h1>Du har inte fixat din profilsida ännu!</h1>
+    <h2>Klicka här för att komma dit: </h2>
+    <a href="/Users/Create">Skapa profil</a>
+</div>
 }
 
+//KOD SOM KÖRS NÄR ANVÄNDAREN ÄR INLOGGAD OCH HAR SATT UPP SIN PROFIL
 else
 {
-    <div class="text-center">
-        <h1>Ta chansen att hitta din nya señor eller señorita ;)</h1>
-        <input type="text" value="Sök på namn..." id="searchInput" />  &nbsp; <button id="searchBtn">Sök</button>
-        &nbsp; &nbsp; &nbsp; &nbsp;<button id="clearBtn">Rensa sök</button>
-    </div>
+<div class="text-center">
+    <h1>Ta chansen att hitta din nya señor eller señorita ;)</h1>
+    <input type="text" value="Sök på namn..." id="searchInput" />  &nbsp; <button id="searchBtn">Sök</button>
+    &nbsp; &nbsp; &nbsp; &nbsp;<a href="/Home/Explore"><p>Rensa sök<p></a>
+</div>
 
-    <div id="storDiv">
-        @foreach (var item in Model)
-        {
-            string name = item.FirstName + " " + item.LastName;
-            <div class="profil">
-                <a href="/Users/Details/@{@item.Id} "><img class="profilBild" src="@item.ProfilePicture" /></a>
-                <p id="user">@name</p>
+<!--Div och loop för att visa alla nuvarande profiler-->
+<!--User-modellen och dess items används för att ta fram
+    Id, bildUrl och namn-->
+<!--Loop som ger inkrementerat id på alla taggar för varje profil.
+    För att senare kunna användas-->
+<div id="storDiv">
 
-            </div>
-        }
-    </div>
+    @for (int i = 0; i < listUser.Count; i++)
+    {
+        string name = listUser[i].FirstName + " " + listUser[i].LastName;
 
-        <!--Hämta datan från Models genom en C#-for-loop och en lista-->
-        <!--Varje id för varje tag ska få namnet på dess id + i-->
-
-    <!--Använd en for-loop i javascript, använd getElementById och kolla ifall
-        namnet som angivits är samma som namnet i getElementById.value-->
-    <!--Spara id, bildUrl och namn för alla profiler i en lokal temporär variabel i javascript-loopen-->
-
+        <div class="profil" id="profil @i">
+            <a href="/Users/Details/@listUser[i].Id" id="profileLink @i">
+                <img class="profilBild" src="@listUser[i].ProfilePicture" id="profilePicture @i" />
+                <p id="textUsernameExplore @i">@name</p>
+            </a>
+        </div>
     }
 
+</div>
 
-<!--script för sökfunktion-->
-<!--Om input valideras korrekt tas storDiv bort och
-    en loop körs för att ta fram profilerna med det angivna namnet-->
+
 <script>
-
-    //SKRIPT FÖR ATT GE ANVÄNDAREN FEEDBACK PÅ INPUT VID SÖK AV NAMN//
-    //OCH FUNKTION FÖR ATT GENOMFÖRA FILTRERINGEN AV PROFILER
-    //Knapp-trycket sköts genom onInput-event
-
-    //KLICK SEARCH-BUTTON//
+    //Script för att ta fram profil av det angivna namnet i sökrutan
+    //OnClick-event
     var searchKnapp = document.getElementById("searchBtn");
     searchKnapp.addEventListener("click", checkInputKorrekt);
 
+    //Validering av input
     function checkInputKorrekt() {
-        //Variabel för att lagra textvärdet från searchInput
-        var inputNamnText = document.getElementById('searchInput').value;
-        var name = document.getElementById('textUsernameExplore').value;
 
-        console.log(inputNamnText);
+        var inputNamn = document.getElementById('searchInput').value;
+        var inputKorrekt = false;
 
         //Namn måste vara längre än 2
         //och endast innehålla bokstäver
-        if (/^([a-z]){3,}/i.test(inputNamnText)) {
-            console.log("Input korrekt")
-
-
-            //Checka så att namnet existerar
-
-            var tag = document.createElement("p");
-            var text = document.createTextNode(inputNamnText);
-            tag.appendChild(text);
-            var element = document.getElementById("storDiv");
-            element.appendChild(tag);
-
-            var i
-            for (i = 0; i < 20; i++)
-            {
-                var userNameId = document.getElementById('searchInput') + i;
-            }
-
-
-
-            $('.profil').remove();
+        if (/^([a-z]){3,}/i.test(inputNamn)) {
+            inputKorrekt = true;
         }
+
         else {
-            console.log("Input ej korrekt")
             alert("Namnet måste vara minst 3 tecken och endast innehålla bokstäver")
         }
 
+        //Om allt stämmer, loopa genom alla profiler
+        //Checka ifall något av namnen är densamma som det angivna i sökrutan.
+        //Lagra den profilen i variabler, rensa bland alla profiler på sidan
+        //och lägg sedan till den hittade profilen
+        if (inputKorrekt) {
+
+            //Först ska antalet profiler räknas
+            var antalProfiler = 0;
+            var i = 0;
+            while (document.getElementById("profil " + i) != null) {
+                antalProfiler++
+                i++
+                console.log(antalProfiler)
+            }
+
+            //Sedan loopas namnet på alla profiler genom.
+            //Den matchande profilen registreras
+            for (var i = 0; i < antalProfiler; i++) {
+                var profileName = document.getElementById("textUsernameExplore " + i).innerText
+                console.log(profileName)
+
+                if (profileName.includes(inputNamn)) {
+                    var profile = document.getElementById("profil " + i)
+                }
+
+            }
+            //Rensa alla profiler
+            $('.profil').remove();
+
+            //Kod för att skriva in profilen
+            var element = document.getElementById("storDiv");
+            element.appendChild(profile);
+
+            //Inaktivera sök-knappen efter en sökning
+            //Klicka på rensa sök för att återställa
+            const button = document.getElementById("searchBtn");
+            button.disabled = true;
+        }
+
+        
     }
 
 </script>
 
 <style>
-    #textUsernameExplore{
+    #textUsernameExplore {
         text-align: center;
     }
 
@@ -147,3 +168,5 @@ else
         padding: 0;
     }
 </style>
+
+}
