@@ -22,10 +22,10 @@
     if (SignInManager.IsSignedIn(User) && User.Identity.Name.Equals(item.UserName))
     {
         ProfilRegistrerad = true;
+<!--Om användaren ej är inloggad-->
     }
 }
 
-<!--Om användaren ej är inloggad-->
 @if (!SignInManager.IsSignedIn(User))
 {
     <div class="text-center">
@@ -139,7 +139,6 @@ else
             button.disabled = true;
         }
 
-        
     }
 
 </script>
