@@ -74,6 +74,39 @@ namespace Dating4U.Controllers
             return NoContent();
         }
 
+        [Route("PostMessage")]
+        public async Task CreateUserWallObject(int Sender, int Receiver, string Message)
+        {
+            using (_context) {
+                User sender = new User();
+                foreach (var item in _context.User)
+                {
+                    if (item.Id == Sender)
+                    {
+                        sender = item;
+                    }
+                }
+
+                User receiver = new User();
+                foreach (var item in _context.User)
+                {
+                    if (item.Id == Receiver)
+                    {
+                        receiver = item;
+                    }
+                }
+
+                UserWall userWall = new UserWall();
+                userWall.Sender = sender;
+                userWall.Receiver = receiver;
+                userWall.Message = Message;
+                //UserWall userWall1 = new UserWall();
+                //userWall1 = userWall;
+
+                await PostUserWall(userWall);
+            }
+        }
+
         // POST: api/UserWalls
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]

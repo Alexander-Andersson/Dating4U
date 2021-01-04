@@ -3,7 +3,7 @@
 @inject UserManager<IdentityUser> UserManager
 @using DataLayer.Models
 
-@model IEnumerable<DataLayer.Models.User>
+@model UserView
 
 @{
     ViewData["Title"] = "Min profil";
@@ -11,7 +11,7 @@
     User _user = new User();
 }
 
-@foreach (var item in Model)
+@foreach (var item in Model.Users)
 {
     if (item.UserName.Equals(User.Identity.Name))
     {
@@ -25,7 +25,7 @@
     string editProfileUrl = "/Users/Edit/" + _user.Id;
 }
 
-@foreach (var item in Model)
+@foreach (var item in Model.Users)
 {
     if (SignInManager.IsSignedIn(User) && User.Identity.Name.Equals(item.UserName))
     {
@@ -97,7 +97,7 @@ else
         </div>
         <div class="Väggen">
             <h4>Vägg</h4>
-            <textarea id="txtAreaMsg" rows="5" cols="60" name="description"></textarea><input type="submit" value="Skicka Meddelande" id="MessageBtn" />
+            <textarea id="txtAreaMsg" rows="5" cols="60" name="description"></textarea><input type="button" value="Skicka Meddelande" id="MessageBtn" />
             <div class="TheWall">
 
             </div>
@@ -114,15 +114,21 @@ else
     var btnMessage = document.getElementById('MessageBtn');
     var textAreaValue = document.getElementById('txtAreaMsg').value;
 
+    btnMessage.addEventListener("click", PostMessage);
+
     function PostMessage()
     {
+        console.log("hej");
         $.ajax({
-            url: '/api/UserWallsController/',
-            method: 'Post',
+            url: "/api/UserWalls/PostMessage",
+            type: 'POST',
+            data: { Sender: 1, Receiver: 1, Message: 'Hejsan' },
             contentType: "application/json; charset=utf-8",
             dataType: "json",
-
-        })
+            success: function (data) {
+                alert("hej")
+            }
+        });
     }
 </script>
 

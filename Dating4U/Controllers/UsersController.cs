@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DataLayer.DatabaseContext;
 using DataLayer.Models;
+using Dating4U.Models;
 
 namespace Dating4U.Controllers
 {
@@ -22,7 +23,11 @@ namespace Dating4U.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-            return View(await _context.User.ToListAsync());
+            UserView uv = new UserView();
+            uv.Users = await _context.User.ToListAsync();
+            uv.Friends = await _context.Friends.ToListAsync();
+            uv.Messages = await _context.UserWall.ToListAsync();
+            return View(uv);
         }
 
         // GET: Users/Details/5
