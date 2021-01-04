@@ -4,14 +4,16 @@ using DataLayer.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    partial class UserDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210104090927_UserWallmig")]
+    partial class UserWallmig
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,11 +86,6 @@ namespace DataLayer.Migrations
 
             modelBuilder.Entity("DataLayer.Models.UserWall", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
 
@@ -97,8 +94,6 @@ namespace DataLayer.Migrations
 
                     b.Property<int?>("SenderId")
                         .HasColumnType("int");
-
-                    b.HasKey("Id");
 
                     b.HasIndex("ReceiverId");
 

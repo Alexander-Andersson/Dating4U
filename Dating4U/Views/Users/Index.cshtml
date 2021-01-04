@@ -97,7 +97,7 @@ else
         </div>
         <div class="Väggen">
             <h4>Vägg</h4>
-            <textarea rows="5" cols="60" name="description"></textarea><input type="submit" value="Skicka Meddelande" id="MessageBtn" />
+            <textarea id="txtAreaMsg" rows="5" cols="60" name="description"></textarea><input type="submit" value="Skicka Meddelande" id="MessageBtn" />
             <div class="TheWall">
 
             </div>
@@ -109,6 +109,23 @@ else
         </div>
     </div>
 }
+
+<script>
+    var btnMessage = document.getElementById('MessageBtn');
+    var textAreaValue = document.getElementById('txtAreaMsg').value;
+
+    function PostMessage()
+    {
+        $.ajax({
+            url: '/api/UserWallsController/',
+            method: 'Post',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+
+        })
+    }
+</script>
+
 <style>
     #HeaderText {
         font-weight:normal;
