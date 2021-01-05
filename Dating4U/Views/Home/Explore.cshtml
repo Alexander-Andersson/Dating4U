@@ -112,17 +112,16 @@ else
             while (document.getElementById("profil " + i) != null) {
                 antalProfiler++
                 i++
-                console.log(antalProfiler)
             }
 
             //Sedan loopas namnet på alla profiler genom.
             //Den matchande profilen registreras
             for (var i = 0; i < antalProfiler; i++) {
                 var profileName = document.getElementById("textUsernameExplore " + i).innerText
-                console.log(profileName)
 
                 if (profileName.includes(inputNamn)) {
                     var profile = document.getElementById("profil " + i)
+                    console.log(profile)
                 }
 
             }
