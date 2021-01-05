@@ -45,7 +45,18 @@ namespace Dating4U.Controllers
                 return NotFound();
             }
 
-            return View(user);
+            UserDetails userDetails = new UserDetails();
+            userDetails.Id = user.Id;
+            userDetails.UserName = user.UserName;
+            userDetails.FirstName = user.FirstName;
+            userDetails.LastName = user.LastName;
+            userDetails.Age = user.Age;
+            userDetails.Gender = user.Gender;
+            userDetails.Description = user.Description;
+            userDetails.ProfilePicture = user.ProfilePicture;
+            userDetails.Messages = await _context.UserWall.ToListAsync();
+            userDetails.Users = await _context.User.ToListAsync();
+            return View(userDetails);
         }
 
         // GET: Users/Create

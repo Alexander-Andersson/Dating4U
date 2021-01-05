@@ -3,23 +3,43 @@
 @inject UserManager<IdentityUser> UserManager
 @using DataLayer.Models
 
-@model DataLayer.Models.User
+@model UserDetails
 
 @{
     ViewData["Title"] = "Min profil";
 }
 
 
+
 @{
     string name = Model.FirstName + " " + Model.LastName;
     string age = Model.Age.ToString() + " år gammal";
+    User loggedInUser = new DataLayer.Models.User(); ;
+
+    User _user = new User();
+    _user.Id = Model.Id;
+    _user.UserName = Model.UserName;
+    _user.FirstName = Model.FirstName;
+    _user.LastName = Model.LastName;
+    _user.Age = Model.Age;
+    _user.Gender = Model.Gender;
+    _user.Description = Model.Description;
+    _user.ProfilePicture = Model.ProfilePicture;
+}
+
+@foreach (var item in Model.Users)
+{
+    if (item.UserName.Equals(User.Identity.Name))
+    {
+        loggedInUser = item;
+    }
 }
 
 @if (!SignInManager.IsSignedIn(User))
 {
     <div class="text-center">
-         <p>Vill du ta del av dessa läckra singlar?</p>
-         <a href="/Identity/Account/Register"><p>Registrera dig gratis</p></a>
+        <p>Vill du ta del av dessa läckra singlar?</p>
+        <a href="/Identity/Account/Register"><p>Registrera dig gratis</p></a>
     </div>
 
 }
@@ -67,13 +87,87 @@ else
         </div>
         <div class="Väggen">
             <h4>Vägg</h4>
-            <textarea rows="5" cols="60" name="description"></textarea><input type="submit" value="Skicka Meddelande" id="MessageBtn" />
-            <div class="TheWall">
+            <textarea id="txtAreaMsg" type="text" rows="5" cols="60" name="description"></textarea><input type="submit" value="Skicka Meddelande" id="MessageBtn" />
+            <div id="TheWall">
+                @{//Loop för att fylla i alla meddelanden
+                    //Gå genom alla meddelanden i databas
+                    foreach (var item in Model.Messages)
+                    {
+                        Console.WriteLine("1");
+                        //Om meddelandet är till den nuvarande profilens sida
+                        if (item.Receiver.Id == _user.Id)
+                        {
+                            Console.WriteLine("2");
+                            var senderName = "";
+                            //Hämta namnet på användare som skickat meddelande
+                            foreach (var sender in Model.Users)
+                            {
+                                Console.WriteLine("3");
+                                if (sender == item.Sender)
+                                {
+                                    Console.WriteLine("4");
+                                    senderName = sender.FirstName + " " + sender.LastName;
+                                }
+                            }
+                            string senderMessage = senderName + ": " + item.Message;
+                            Console.WriteLine("5");
+                            
+                            <p id="wallText">@senderMessage</p>
+                            <hr />
+                        }
 
+                    }
+                }
             </div>
         </div>
     </div>
 }
+
+<script>
+    var btnMessage = document.getElementById('MessageBtn');
+    btnMessage.addEventListener("click", PostMessage);
+
+    var profil = @Html.Raw(Json.Serialize(_user));
+
+    var inloggad = @Html.Raw(Json.Serialize(loggedInUser));
+
+    function PostMessage()
+    {
+        var textAreaValue = document.getElementById('txtAreaMsg').value;
+        //Checka ifall tom ruta
+        if (textAreaValue != "")
+        {
+            var message = { Sender: inloggad.id, Receiver: profil.id, Message: textAreaValue }
+            $.ajax({
+                url: "/api/UserWalls/PostMessage",
+                type: 'POST',
+                data: JSON.stringify(message),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: alert("Meddelandet har skickats!")
+            })
+
+            //Skapa variabel med sändare och meddelande
+            var senderMessage = inloggad.firstName + " " + inloggad.lastName + ": " + textAreaValue;
+
+            //Skapa taggar och appenda meddelandet på väggen
+            var node = document.createElement("P");
+            var hrNode = document.createElement("hr");
+            node.setAttribute("id", "wallText");
+            var textnode = document.createTextNode(senderMessage);
+            node.appendChild(textnode);
+            node.appendChild(hrNode);
+
+            document.getElementById("TheWall").appendChild(node);
+
+            //rensa textrutan
+            document.getElementById("txtAreaMsg").value = "";
+        }
+        else
+            alert("Rutan får inte vara tom!")
+
+    }
+</script>
 
 <style>
     #HeaderText {
@@ -105,12 +199,30 @@ else
         margin-left: 5%;
     }
 
-    .TheWall {
+    #TheWall {
         width: 100%;
-        height: 200px;
+        height: auto;
+        min-height: 20%;
         margin-top: 3%;
         border: solid;
         border-radius: 1em;
+        border-width: -1em;
+    }
+
+    #wallText {
+        margin-left: 1em;
+        margin-right: 1em;
+        margin-top: .5em;
+        margin-bottom: .5em;
+    }
+
+    hr {
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+        margin-left: auto;
+        margin-right: auto;
+        border-style: inset;
+        border-width: 1px;
     }
 
     .Friends {
