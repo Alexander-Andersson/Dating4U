@@ -4,14 +4,16 @@ using DataLayer.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    partial class UserDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210105145906_ds")]
+    partial class ds
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,7 +28,7 @@ namespace DataLayer.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int?>("ReceiverId")
+                    b.Property<int?>("RecieverId")
                         .HasColumnType("int");
 
                     b.Property<int?>("SenderId")
@@ -34,7 +36,7 @@ namespace DataLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ReceiverId");
+                    b.HasIndex("RecieverId");
 
                     b.HasIndex("SenderId");
 
@@ -116,15 +118,15 @@ namespace DataLayer.Migrations
 
             modelBuilder.Entity("DataLayer.Models.FriendRequest", b =>
                 {
-                    b.HasOne("DataLayer.Models.User", "Receiver")
+                    b.HasOne("DataLayer.Models.User", "Reciever")
                         .WithMany()
-                        .HasForeignKey("ReceiverId");
+                        .HasForeignKey("RecieverId");
 
                     b.HasOne("DataLayer.Models.User", "Sender")
                         .WithMany()
                         .HasForeignKey("SenderId");
 
-                    b.Navigation("Receiver");
+                    b.Navigation("Reciever");
 
                     b.Navigation("Sender");
                 });

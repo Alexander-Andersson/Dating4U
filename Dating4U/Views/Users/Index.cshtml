@@ -35,22 +35,22 @@
 
 @if (!SignInManager.IsSignedIn(User))
 {
-<div class="text-center">
-    <p>Du måste logga in för att se din profil</p>
-    <a href="/Identity/Account/Login"><p>Logga in</p></a>
-    <br />
-    <p>Har du inget konto?</p>
-    <a href="/Identity/Account/Register"><p>Registrera dig</p></a>
+    <div class="text-center">
+        <p>Du måste logga in för att se din profil</p>
+        <a href="/Identity/Account/Login"><p>Logga in</p></a>
+        <br />
+        <p>Har du inget konto?</p>
+        <a href="/Identity/Account/Register"><p>Registrera dig</p></a>
 
-</div>
+    </div>
 }
 
 else if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == false)
 {
     <div class="text-center">
-         <h1>Du har inte fixat din profilsida ännu!</h1>
-         <h2>Klicka här för att komma dit: </h2>
-         <a href="/Users/Create">Skapa profil</a>
+        <h1>Du har inte fixat din profilsida ännu!</h1>
+        <h2>Klicka här för att komma dit: </h2>
+        <a href="/Users/Create">Skapa profil</a>
     </div>
 }
 
@@ -99,10 +99,10 @@ else
             <h4>Vägg</h4>
             <textarea id="txtAreaMsg" type="text" rows="5" cols="60" name="description"></textarea><input type="button" value="Skicka Meddelande" id="MessageBtn" />
             <div id="TheWall">
-               
+
                 @{//Loop för att fylla i alla meddelanden
                     //Gå genom alla meddelanden i databas
-                    foreach(var item in Model.Messages)
+                    foreach (var item in Model.Messages)
                     {
                         //Om meddelandet är till den nuvarande profilens sida
                         if (item.Receiver == _user)
@@ -118,10 +118,10 @@ else
                             }
                             string senderMessage = senderName + ": " + item.Message;
 
-                                <p id="wallText">@senderMessage</p>
-                                <hr />
+                            <p id="wallText">@senderMessage</p>
+                            <hr />
                         }
-                                
+
                     }
                 }
 
@@ -140,7 +140,7 @@ else
     btnMessage.addEventListener("click", PostMessage);
 
     var inloggad = @Html.Raw(Json.Serialize(_user));
-    
+
     function PostMessage()
     {
         var textAreaValue = document.getElementById('txtAreaMsg').value;
@@ -175,13 +175,51 @@ else
         }
         else
             alert("Rutan får inte vara tom!")
-        
+
+    }
+</script>
+
+<textarea id="txtAreaMsg2" type="text" rows="5" cols="60" name="description"></textarea>
+<input type="button" value="Skicka Meddelande" id="MessageBtn2" />
+
+<script>
+    var btnMessage = document.getElementById('MessageBtn2');
+    btnMessage.addEventListener("click", SendFriendRequest);
+
+    var inloggad = @Html.Raw(Json.Serialize(_user));
+
+    function SendFriendRequest()
+    {
+        var friendRequest = { Sender: 1, Receiver: 2 }
+            $.ajax({
+                url: "/api/FriendRequests/SendFriendRequest",
+                type: 'POST',
+                data: JSON.stringify(friendRequest),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: alert("Vänförfrågning har skickats!")
+            })
+
+            ////Skapa variabel med sändare och meddelande
+            //var senderMessage = inloggad.firstName + " " + inloggad.lastName + ": " + textAreaValue;
+
+            ////Skapa taggar och appenda meddelandet på väggen
+            //var node = document.createElement("P");
+            //var hrNode = document.createElement("hr");
+            //node.setAttribute("id", "wallText");
+            //var textnode = document.createTextNode(senderMessage);
+            //node.appendChild(textnode);
+            //node.appendChild(hrNode);
+
+            //document.getElementById("TheWall").appendChild(node);
+
+
     }
 </script>
 
 <style>
     #HeaderText {
-        font-weight:normal;
+        font-weight: normal;
         text-align: center;
         margin-bottom: 5%;
     }
