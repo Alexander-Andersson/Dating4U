@@ -97,7 +97,7 @@ else
         </div>
         <div class="Väggen">
             <h4>Vägg</h4>
-            <textarea id="txtAreaMsg" rows="5" cols="60" name="description"></textarea><input type="button" value="Skicka Meddelande" id="MessageBtn" />
+            <textarea id="txtAreaMsg" type="text" rows="5" cols="60" name="description"></textarea><input type="button" value="Skicka Meddelande" id="MessageBtn" />
             <div class="TheWall">
 
             </div>
@@ -112,20 +112,19 @@ else
 
 <script>
     var btnMessage = document.getElementById('MessageBtn');
-    var textAreaValue = document.getElementById('txtAreaMsg').value;
-
     btnMessage.addEventListener("click", PostMessage);
 
     var hej = @Html.Raw(Json.Serialize(@Model.Users));
 
-    for (var i = 0; i < 10; i++) {
-        console.log(hej[i]);
-    }
+    var inloggad = @Html.Raw(Json.Serialize(_user));
+
+    console.log(inloggad.id);
     
     function PostMessage()
     {
-        var message = {Sender: 1, Receiver: 2, Message:"Hej123"}
-        console.log("hej");
+        var textAreaValue = document.getElementById('txtAreaMsg').value;
+        console.log(textAreaValue);
+        var message = { Sender: inloggad.id, Receiver: inloggad.id, Message: textAreaValue}
         $.ajax({
             url: "/api/UserWalls/PostMessage",
             type: 'POST',
