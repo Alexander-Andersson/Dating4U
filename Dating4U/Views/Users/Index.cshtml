@@ -116,17 +116,24 @@ else
 
     btnMessage.addEventListener("click", PostMessage);
 
+    var hej = @Html.Raw(Json.Serialize(@Model.Users));
+
+    for (var i = 0; i < 10; i++) {
+        console.log(hej[i]);
+    }
+    
     function PostMessage()
     {
+        var message = {Sender: 1, Receiver: 2, Message:"Hej123"}
         console.log("hej");
         $.ajax({
             url: "/api/UserWalls/PostMessage",
             type: 'POST',
-            data: { Sender: 1, Receiver: 1, Message: 'Hejsan' },
+            data: JSON.stringify(message),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (data) {
-                alert("hej")
+                alert("Hej122233")
             }
         });
     }

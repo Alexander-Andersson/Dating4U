@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DataLayer.DatabaseContext;
 using DataLayer.Models;
+using Dating4U.Models;
 
 namespace Dating4U.Controllers
 {
@@ -73,8 +74,15 @@ namespace Dating4U.Controllers
 
             return NoContent();
         }
-
         [Route("PostMessage")]
+        public async Task ConvertJson([FromBody] MessageJson messageJson)
+        {
+            int sender = messageJson.Sender;
+            int receiver = messageJson.Receiver;
+            string message = messageJson.Message;
+            await CreateUserWallObject(sender, receiver, message);
+        }
+
         public async Task CreateUserWallObject(int Sender, int Receiver, string Message)
         {
             using (_context) {
