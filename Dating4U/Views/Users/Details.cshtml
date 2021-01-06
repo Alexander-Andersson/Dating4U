@@ -14,19 +14,22 @@
 @{
     string name = Model.FirstName + " " + Model.LastName;
     string age = Model.Age.ToString() + " år gammal";
-    User loggedInUser = new DataLayer.Models.User(); ;
+    //Användaren som är inloggad
+    User loggedInUser = new DataLayer.Models.User();
 
-    User _user = new User();
-    _user.Id = Model.Id;
-    _user.UserName = Model.UserName;
-    _user.FirstName = Model.FirstName;
-    _user.LastName = Model.LastName;
-    _user.Age = Model.Age;
-    _user.Gender = Model.Gender;
-    _user.Description = Model.Description;
-    _user.ProfilePicture = Model.ProfilePicture;
+    //Användaren vars profil visas?
+    User profile = new User();
+    profile.Id = Model.Id;
+    profile.UserName = Model.UserName;
+    profile.FirstName = Model.FirstName;
+    profile.LastName = Model.LastName;
+    profile.Age = Model.Age;
+    profile.Gender = Model.Gender;
+    profile.Description = Model.Description;
+    profile.ProfilePicture = Model.ProfilePicture;
 }
 
+<!--Loop för att avgöra vem som är inloggad-->
 @foreach (var item in Model.Users)
 {
     if (item.UserName.Equals(User.Identity.Name))
@@ -84,7 +87,11 @@ else
                     </li>
                 </ul>
             </div>
+            <br />
+            <input type="button" value="Lägg till vän" id="AddFriendBtn" />
         </div>
+
+
         <div class="Väggen">
             <h4>Vägg</h4>
             <textarea id="txtAreaMsg" type="text" rows="5" cols="60" name="description"></textarea><input type="submit" value="Skicka Meddelande" id="MessageBtn" />
@@ -93,25 +100,20 @@ else
                     //Gå genom alla meddelanden i databas
                     foreach (var item in Model.Messages)
                     {
-                        Console.WriteLine("1");
                         //Om meddelandet är till den nuvarande profilens sida
-                        if (item.Receiver.Id == _user.Id)
+                        if (item.Receiver.Id == profile.Id)
                         {
-                            Console.WriteLine("2");
                             var senderName = "";
                             //Hämta namnet på användare som skickat meddelande
                             foreach (var sender in Model.Users)
                             {
-                                Console.WriteLine("3");
                                 if (sender == item.Sender)
                                 {
-                                    Console.WriteLine("4");
                                     senderName = sender.FirstName + " " + sender.LastName;
                                 }
                             }
                             string senderMessage = senderName + ": " + item.Message;
-                            Console.WriteLine("5");
-                            
+
                             <p id="wallText">@senderMessage</p>
                             <hr />
                         }
@@ -123,14 +125,47 @@ else
     </div>
 }
 
-<script>
-    var btnMessage = document.getElementById('MessageBtn');
-    btnMessage.addEventListener("click", PostMessage);
 
-    var profil = @Html.Raw(Json.Serialize(_user));
+
+<script>
+    //Variabler för att lagra användaren och profilen som visas
+    var profil = @Html.Raw(Json.Serialize(profile));
 
     var inloggad = @Html.Raw(Json.Serialize(loggedInUser));
 
+    //Variabel för message-knapp
+    var btnMessage = document.getElementById('MessageBtn');
+    //Variabel för sendFriendRequest-knapp
+    var btnAddFriend = document.getElementById('AddFriendBtn');
+
+    //Checka ifall användaren redan skickat vänförfrågan till profilen
+    //eller ifall profilen redan skickat vänförfrågan till användaren
+    //Loopar genom tabellen FriendRequest
+    var friendRequestSent = false;
+
+    var FriendRequests = @Html.Raw(Json.Serialize(Model.FriendRequests));
+
+    for (var i = 0; i < FriendRequests.length; i++) {
+
+        //Ifall den inloggade skickat friendrequest
+        if (profil.id == FriendRequests[i].receiver.id && inloggad.id == FriendRequests[i].sender.id) {
+            btnAddFriend.disabled = true;
+            btnAddFriend.value = "Vänförfrågan skickad"
+            break;
+        }
+
+        //Ifall den inloggade fått friendrequest från profilen
+        if (profil.id == FriendRequests[i].sender.id && inloggad.id == FriendRequests[i].receiver.id) {
+            btnAddFriend.value = "Bekräfta förfrågan"
+            btnAddFriend.id = "confirmAddFriendBtn"
+            break;
+        }   
+    }
+
+    //Event för att skicka meddelande genom Json-objekt
+    btnMessage.addEventListener("click", PostMessage);
+
+    //Funktion för att posta meddelande
     function PostMessage()
     {
         var textAreaValue = document.getElementById('txtAreaMsg').value;
@@ -165,9 +200,53 @@ else
         }
         else
             alert("Rutan får inte vara tom!")
-
     }
+
+
+    //Check innan funktion SendFriendRequest() körs
+    if (btnAddFriend.disabled == false && btnAddFriend.id == "AddFriendBtn") {
+
+        btnAddFriend.addEventListener("click", SendFriendRequest);
+    }
+
+    //Funktion för att lägga till vän
+    //Fungerar på samma sätta som skript för skicka meddelande.
+    //Sparar datan i ett Json-objekt som skickas till
+    //metoden Post i FriendRequestsController
+    function SendFriendRequest()
+    {
+        var friendRequest = { Sender: inloggad.id, Receiver: profil.id }
+            $.ajax({
+                url: "/api/FriendRequests/SendFriendRequest",
+                type: 'POST',
+                data: JSON.stringify(friendRequest),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: alert("Vänförfrågning har skickats!")
+            })
+
+        btnAddFriend.disabled = true;
+        btnAddFriend.value = "Vänförfrågan skickad";
+    }
+
+    //If- för att checka ifall funktion för bekräfta förfrågan bör köras
+    if (btnAddFriend.disabled == false && btnAddFriend.id == "confirmAddFriendBtn") {
+        btnAddFriend.addEventListener("click", confirmFriendRequest)
+    }
+
+    //Funktion för att bekräfta förfrågan
+    function confirmFriendRequest(){
+        alert("Accepterat request!")
+    }
+
 </script>
+
+
+<!--Behövs även en check för att se ifall användaren redan skickat en vänförfågan
+    till den andra användaren.
+    Eller ifall den redan fått en vänförfrågan från den andra användaren-->
+
+
 
 <style>
     #HeaderText {

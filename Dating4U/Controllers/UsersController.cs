@@ -56,6 +56,7 @@ namespace Dating4U.Controllers
             userDetails.ProfilePicture = user.ProfilePicture;
             userDetails.Messages = await _context.UserWall.ToListAsync();
             userDetails.Users = await _context.User.ToListAsync();
+            userDetails.FriendRequests = await _context.FriendRequests.ToListAsync();
             return View(userDetails);
         }
 

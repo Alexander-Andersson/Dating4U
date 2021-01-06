@@ -94,6 +94,12 @@ else
                     </li>
                 </ul>
             </div>
+
+            <br />
+            <a href="@editProfileUrl">Redigera Profil</a>
+            <br />
+            <a href="/Identity/Account/Manage">Redigera Inloggningsuppgifter</a>
+
         </div>
         <div class="Väggen">
             <h4>Vägg</h4>
@@ -127,10 +133,7 @@ else
 
             </div>
 
-            <br />
-            <a href="@editProfileUrl">Redigera Profil</a>
-            <br />
-            <a href="/Identity/Account/Manage">Redigera Inloggningsuppgifter</a>
+            
         </div>
     </div>
 }
@@ -179,43 +182,6 @@ else
     }
 </script>
 
-<textarea id="txtAreaMsg2" type="text" rows="5" cols="60" name="description"></textarea>
-<input type="button" value="Skicka Meddelande" id="MessageBtn2" />
-
-<script>
-    var btnMessage = document.getElementById('MessageBtn2');
-    btnMessage.addEventListener("click", SendFriendRequest);
-
-    var inloggad = @Html.Raw(Json.Serialize(_user));
-
-    function SendFriendRequest()
-    {
-        var friendRequest = { Sender: 1, Receiver: 2 }
-            $.ajax({
-                url: "/api/FriendRequests/SendFriendRequest",
-                type: 'POST',
-                data: JSON.stringify(friendRequest),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: alert("Vänförfrågning har skickats!")
-            })
-
-            ////Skapa variabel med sändare och meddelande
-            //var senderMessage = inloggad.firstName + " " + inloggad.lastName + ": " + textAreaValue;
-
-            ////Skapa taggar och appenda meddelandet på väggen
-            //var node = document.createElement("P");
-            //var hrNode = document.createElement("hr");
-            //node.setAttribute("id", "wallText");
-            //var textnode = document.createTextNode(senderMessage);
-            //node.appendChild(textnode);
-            //node.appendChild(hrNode);
-
-            //document.getElementById("TheWall").appendChild(node);
-
-
-    }
-</script>
 
 <style>
     #HeaderText {
