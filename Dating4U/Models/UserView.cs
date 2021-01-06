@@ -13,5 +13,7 @@ namespace Dating4U.Models
         public List<UserWall> Messages { get; set; }
 
         public List<Friends> Friends { get; set; }
+
+        public List<FriendRequest> FriendRequests { get; set; }
     }
 }
