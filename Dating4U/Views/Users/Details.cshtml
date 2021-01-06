@@ -70,24 +70,8 @@ else
                 <h4>Om mig</h4>
                 <p class="ProfilText">@Model.Description</p>
             </div>
-            <div class="Friends">
-                <h4>Vänner</h4>
-                <ul>
-                    <li>
-                        Vän 1
-                    </li>
-                    <li>
-                        Vän 2
-                    </li>
-                    <li>
-                        Vän 3
-                    </li>
-                    <li>
-                        Vän 4
-                    </li>
-                </ul>
-            </div>
             <br />
+            <p id="friendRequestText"></p>
             <input type="button" value="Lägg till vän" id="AddFriendBtn" />
         </div>
 
@@ -137,31 +121,59 @@ else
     var btnMessage = document.getElementById('MessageBtn');
     //Variabel för sendFriendRequest-knapp
     var btnAddFriend = document.getElementById('AddFriendBtn');
+    //Variabel för vän-check
+    var isFriends = false;
+    //Variabel för FriendRequestId
+    var FriendRequestId;
 
-    //Checka ifall användaren redan skickat vänförfrågan till profilen
-    //eller ifall profilen redan skickat vänförfrågan till användaren
-    //Loopar genom tabellen FriendRequest
-    var friendRequestSent = false;
+    //En check som kollar ifall den som är inloggad är vän med profilen man besöker
+    var Friends = @Html.Raw(Json.Serialize(Model.Friends));
+    console.log(Friends)
+    for (var i = 0; i < Friends.length; i++) {
+        //Två if-statements som kollar ifall id på den inloggade och profilen finns i någon av kolumnerna i Friendstabellen
+        //Då det skiljer sig vilken kolumn i databasen användarna hamnar i beroende på ifall de skickade eller accepterade
 
-    var FriendRequests = @Html.Raw(Json.Serialize(Model.FriendRequests));
-
-    for (var i = 0; i < FriendRequests.length; i++) {
-
-        //Ifall den inloggade skickat friendrequest
-        if (profil.id == FriendRequests[i].receiver.id && inloggad.id == FriendRequests[i].sender.id) {
+        //Om en match hittas så sätts isFriends till true
+        if (profil.id == Friends[i].friend_1.id && inloggad.id == Friends[i].friend_2.id) {
             btnAddFriend.disabled = true;
-            btnAddFriend.value = "Vänförfrågan skickad"
+            btnAddFriend.value = "Ni är vänner";
+            console.log("träff");
+            isFriends = true;
             break;
         }
-
-        //Ifall den inloggade fått friendrequest från profilen
-        if (profil.id == FriendRequests[i].sender.id && inloggad.id == FriendRequests[i].receiver.id) {
-            btnAddFriend.value = "Bekräfta förfrågan"
-            btnAddFriend.id = "confirmAddFriendBtn"
+        if (profil.id == Friends[i].friend_2.id && inloggad.id == Friends[i].friend_1.id) {
+            btnAddFriend.disabled = true;
+            btnAddFriend.value = "Ni är vänner"
+            isFriends = true;
             break;
-        }   
+        }
     }
 
+    //Ifall inte vänner
+    if (!isFriends) {
+        //Checka ifall användaren redan skickat vänförfrågan till profilen
+        //eller ifall profilen redan skickat vänförfrågan till användaren
+        //Loopar genom tabellen FriendRequest
+        var FriendRequests = @Html.Raw(Json.Serialize(Model.FriendRequests));
+
+        for (var i = 0; i < FriendRequests.length; i++) {
+
+            //Ifall den inloggade skickat friendrequest
+            if (profil.id == FriendRequests[i].receiver.id && inloggad.id == FriendRequests[i].sender.id) {
+                btnAddFriend.disabled = true;
+                btnAddFriend.value = "Vänförfrågan skickad"
+                break;
+            }
+
+            //Ifall den inloggade fått friendrequest från profilen
+            if (profil.id == FriendRequests[i].sender.id && inloggad.id == FriendRequests[i].receiver.id) {
+                btnAddFriend.value = "Bekräfta förfrågan"
+                btnAddFriend.id = "confirmAddFriendBtn"
+                FriendRequestId = FriendRequests[i].id;
+                break;
+            }
+        }
+    }
     //Event för att skicka meddelande genom Json-objekt
     btnMessage.addEventListener("click", PostMessage);
 
@@ -235,8 +247,28 @@ else
     }
 
     //Funktion för att bekräfta förfrågan
-    function confirmFriendRequest(){
-        alert("Accepterat request!")
+    function confirmFriendRequest() {
+        var friends = { Friend_1: inloggad.id, Friend_2: profil.id }
+        $.ajax({
+            url: "/api/Friends/AddFriends",
+            type: 'POST',
+            data: JSON.stringify(friends),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: alert("Vänförfrågan accepterad!")
+        })
+        btnAddFriend.disabled = true;
+        btnAddFriend.value = "Ni är nu vänner";
+        DeleteFriendRequest();
+    }
+
+    function DeleteFriendRequest() {
+        $.ajax({
+            url: "/api/FriendRequests/" + FriendRequestId,
+            type: 'DELETE',
+            contentType: "application/json; charset=utf-8",
+            
+        })
     }
 
 </script>

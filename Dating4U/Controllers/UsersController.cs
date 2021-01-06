@@ -38,6 +38,8 @@ namespace Dating4U.Controllers
                 return NotFound();
             }
 
+            
+
             var user = await _context.User
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (user == null)
@@ -57,6 +59,7 @@ namespace Dating4U.Controllers
             userDetails.Messages = await _context.UserWall.ToListAsync();
             userDetails.Users = await _context.User.ToListAsync();
             userDetails.FriendRequests = await _context.FriendRequests.ToListAsync();
+            userDetails.Friends = await _context.Friends.ToListAsync();
             return View(userDetails);
         }
 

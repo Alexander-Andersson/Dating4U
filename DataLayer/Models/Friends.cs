@@ -5,10 +5,10 @@ using System.Text;
 
 namespace DataLayer.Models
 {
-    [Keyless]
     public class Friends
     {
-        public User User1 { get; set; }
-        public User User2 { get; set; }
+        public int Id { get; set; }
+        public User Friend_1 { get; set; }
+        public User Friend_2 { get; set; }
     }
 }

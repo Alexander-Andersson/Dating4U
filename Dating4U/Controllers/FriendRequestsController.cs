@@ -129,6 +129,7 @@ namespace Dating4U.Controllers
 
         // DELETE: api/FriendRequests/5
         [HttpDelete("{id}")]
+        //[Route("Delete")]
         public async Task<IActionResult> DeleteFriendRequest(int id)
         {
             var friendRequest = await _context.FriendRequests.FindAsync(id);

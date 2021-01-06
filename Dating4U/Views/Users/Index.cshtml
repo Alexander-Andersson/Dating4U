@@ -23,6 +23,20 @@
     string name = _user.FirstName + " " + _user.LastName;
     string age = _user.Age.ToString() + " år gammal";
     string editProfileUrl = "/Users/Edit/" + _user.Id;
+    List<User> friendList = new List<User>();
+}
+
+@foreach (var item in Model.Friends)
+{
+    if(item.Friend_1.Id == _user.Id)
+    {
+        friendList.Add(item.Friend_2);
+    }
+
+    if (item.Friend_2.Id == _user.Id)
+    {
+        friendList.Add(item.Friend_1);
+    }
 }
 
 @foreach (var item in Model.Users)
@@ -80,18 +94,11 @@ else
             <div class="Friends">
                 <h4>Vänner</h4>
                 <ul>
-                    <li>
-                        Vän 1
-                    </li>
-                    <li>
-                        Vän 2
-                    </li>
-                    <li>
-                        Vän 3
-                    </li>
-                    <li>
-                        Vän 4
-                    </li>
+                    @foreach (var item in friendList)
+                    {
+                        string friendName = item.FirstName + " " + item.LastName;
+                        <a id="friendLink" href="/Users/Details/@item.Id"><li>@friendName</li></a>
+                    }
                 </ul>
             </div>
 
@@ -258,5 +265,19 @@ else
         border: solid;
         border-color: black;
         border-radius: 2em;
+    }
+
+    #friendLink {
+        color: black;
+        text-decoration: none;
+        width: auto;
+    }
+
+    ul{
+        width: auto;
+    }
+
+    #friendLink:hover {
+        color: red;
     }
 </style>
