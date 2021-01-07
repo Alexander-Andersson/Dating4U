@@ -15,7 +15,7 @@
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label>Email</label>
-                <input asp-for="UserName" class="form-control" readonly/>
+                <input asp-for="UserName" class="form-control" readonly />
                 <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -44,10 +44,16 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                @*<label asp-for="ProfilePicture" class="control-label"></label>*@
                 <label>Profilbild(URL)</label>
-                <input asp-for="ProfilePicture" class="form-control" accept="image/x-png, image/jpeg, image/gif"/>
+                <input asp-for="ProfilePicture" class="form-control" accept="image/x-png, image/jpeg, image/gif" />
                 <span asp-validation-for="ProfilePicture" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Inaktivera konto</label>
+                <label style="font-size: .8em;">Kryssa i rutan för att inaktivera kontot, 
+                avmarkera rutan för att återaktivera kontot. Tryck sedan save för att spara ändringarna</label>
+                <input asp-for="IsInactivated" class="form-control">
+                <span asp-validation-for="IsInactivated" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -57,8 +63,20 @@
 </div>
 
 <div>
-    <a asp-action="Index">Tillbaka till profil</a>
+    <input type="submit" id="InactivateAccount" value="Avsluta konto" />
+    <br /><br />
+    <p><a asp-action="Index">Tillbaka till profil</a></p>
 </div>
+
+<!--Skript för avsluta konto-->
+<script>
+    var inactivateAccBtn = document.getElementById("InactivateAccount")
+    inactivateAccBtn.addEventListener("click", InactivateAccount)
+
+    function InactivateAccount(){
+        alert("avsluta");
+    };
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

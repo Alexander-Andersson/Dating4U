@@ -107,7 +107,7 @@ namespace Dating4U.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserName,FirstName,LastName,Age,Gender,Description,ProfilePicture")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,UserName,FirstName,LastName,Age,Gender,Description,ProfilePicture,IsInactivated")] User user)
         {
             if (id != user.Id)
             {

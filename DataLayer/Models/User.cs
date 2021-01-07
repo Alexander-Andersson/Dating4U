@@ -17,5 +17,6 @@ namespace DataLayer.Models
         public string Description { get; set; }
         [Url]
         public string ProfilePicture { get; set; }
+        public bool IsInactivated { get; set; }
     }
 }

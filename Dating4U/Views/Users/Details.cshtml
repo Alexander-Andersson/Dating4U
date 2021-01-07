@@ -53,6 +53,7 @@
     }
 }
 
+<!--Om ej inloggad-->
 @if (!SignInManager.IsSignedIn(User))
 {
     <div class="text-center">
@@ -62,6 +63,7 @@
 
 }
 
+<!--Om inloggad men ej registrerad profil-->
 @if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == false)
 {
     <div class="text-center">
@@ -72,7 +74,21 @@
 
 }
 
-@if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == true)
+<!--Om kontot är inaktiverat-->
+@if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == true && loggedInUser.IsInactivated == true)
+{
+    <div class="text-center">
+        <h2>Ditt konto är inaktiverat!</h2>
+        <h3>Missa inte din chans att få snacka med heta singlar ;)</h3>
+        <br />
+        <h6>Klicka här för att återaktivera ditt konto: </h6>
+        <a href="Users/Edit/@loggedInUser.Id">Redigera profil</a>
+    </div>
+
+}
+
+<!--Om inloggad, profil registrerad och ej inaktiverad-->
+@if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == true && loggedInUser.IsInactivated == false)
 {
     if (HaveFriendRequest)
     {

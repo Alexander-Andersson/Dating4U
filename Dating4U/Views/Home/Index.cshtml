@@ -5,11 +5,6 @@
 
 @model UserView
 
-<audio controls>
-    <source src="~/Starwars.mp3" type="audio/mpeg">
-</audio>
-
-
 @{
     ViewData["Title"] = "Home Page";
 
@@ -38,14 +33,17 @@
     }
 }
 
+<!--Om ej inloggad-->
 @if (!SignInManager.IsSignedIn(User))
 {
-<div class="text-center">
-    <h1 class="display-4">Vill du ta del av dessa läckra singlar?</h1>
-    <a href="/Identity/Account/Register"><p>Registrera dig gratis</p></a>
-</div>
+    <div class="text-center">
+        <h1 class="display-4">Vill du ta del av dessa läckra singlar?</h1>
+        <a href="/Identity/Account/Register"><p>Registrera dig</p></a>
+        <a href="/Identity/Account/Login"><p>Logga in</p></a>
+    </div>
 }
 
+<!--Om inloggad men ej registrerad profil-->
 @if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == false)
 {
     <div class="text-center">
@@ -56,7 +54,21 @@
 
 }
 
-@if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == true)
+<!--Om kontot är inaktiverat-->
+@if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == true && _user.IsInactivated == true)
+{
+    <div class="text-center">
+        <h2>Ditt konto är inaktiverat!</h2>
+        <h3>Missa inte din chans att få snacka med heta singlar ;)</h3>
+        <br />
+        <h6>Klicka här för att återaktivera ditt konto: </h6>
+        <a href="Users/Edit/@_user.Id">Redigera profil</a>
+    </div>
+
+}
+
+<!--Om inloggad, profil registrerad och ej inaktiverad-->
+@if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == true && _user.IsInactivated == false)
 {
     if (HaveFriendRequest)
     {
@@ -113,6 +125,7 @@ else
         </div>
     }
 }
+
 
 <style>
     .profil {
