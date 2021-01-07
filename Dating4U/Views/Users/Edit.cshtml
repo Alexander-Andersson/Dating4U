@@ -20,33 +20,34 @@
             </div>
             <div class="form-group">
                 <label>Förnamn</label>
-                <input asp-for="FirstName" class="form-control" />
+                <input asp-for="FirstName" class="form-control" required/>
                 <span asp-validation-for="FirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label>Efternamn</label>
-                <input asp-for="LastName" class="form-control" />
+                <input asp-for="LastName" class="form-control" required/>
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label>Ålder</label>
-                <input asp-for="Age" class="form-control" />
-                <span asp-validation-for="Age" class="text-danger"></span>
+                <input asp-for="Age" type="number"  class="form-control" step="1" min="18" max="99" required>
+                <span asp-validation-for="Age"  class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label>Kön</label>
-                <input asp-for="Gender" class="form-control" />
+                <label>Kön</label> <br>
+                Man:  <input asp-for="Gender" type="radio" class="form-control" name="gender"  id="RadioBox" value="Man" checked>
+                Kvinna: <input asp-for="Gender" type="radio" class="form-control" name="gender"  id="RadioBox" value="Kvinna">
                 <span asp-validation-for="Gender" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label>Beskrivning</label>
-                <input asp-for="Description" class="form-control" />
+                <input asp-for="Description" class="form-control" required/>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
                 @*<label asp-for="ProfilePicture" class="control-label"></label>*@
                 <label>Profilbild(URL)</label>
-                <input asp-for="ProfilePicture" class="form-control" accept="image/x-png, image/jpeg, image/gif"/>
+                <input asp-for="ProfilePicture" class="form-control" accept="image/x-png, image/jpeg, image/gif" required/>
                 <span asp-validation-for="ProfilePicture" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -59,6 +60,17 @@
 <div>
     <a asp-action="Index">Tillbaka till profil</a>
 </div>
+
+<style>
+
+    input[type=radio] {
+        border: 0px;
+        width: 10%;
+        height: 1.5em;
+        padding: 0;
+        align-items: flex-start;
+    }
+</style>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
