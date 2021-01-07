@@ -36,7 +36,12 @@ namespace Dating4U.Controllers
 
         public async Task<IActionResult> Explore()
         {
-            return View(await _context.User.ToListAsync());
+            UserView uv = new UserView();
+            uv.Users = await _context.User.ToListAsync();
+            uv.Friends = await _context.Friends.ToListAsync();
+            uv.Messages = await _context.UserWall.ToListAsync();
+            uv.FriendRequests = await _context.FriendRequests.ToListAsync();
+            return View(uv);
         }
 
         public IActionResult Privacy()

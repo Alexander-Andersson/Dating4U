@@ -12,12 +12,13 @@
 
 
 @{
+    bool ProfilRegistrerad = false;
     string name = Model.FirstName + " " + Model.LastName;
     string age = Model.Age.ToString() + " år gammal";
     //Användaren som är inloggad
     User loggedInUser = new DataLayer.Models.User();
 
-    //Användaren vars profil visas?
+    //Användaren vars profil visas
     User profile = new User();
     profile.Id = Model.Id;
     profile.UserName = Model.UserName;
@@ -27,14 +28,28 @@
     profile.Gender = Model.Gender;
     profile.Description = Model.Description;
     profile.ProfilePicture = Model.ProfilePicture;
+
+    bool HaveFriendRequest = false;
+    List<FriendRequest> friendRequests = new List<FriendRequest>();
 }
 
 <!--Loop för att avgöra vem som är inloggad-->
 @foreach (var item in Model.Users)
 {
-    if (item.UserName.Equals(User.Identity.Name))
+    if (SignInManager.IsSignedIn(User) && item.UserName.Equals(User.Identity.Name))
     {
+        ProfilRegistrerad = true;
         loggedInUser = item;
+    }
+}
+
+<!--Loop för fylla friendRequests-->
+@foreach (var item in Model.FriendRequests)
+{
+    if (item.Receiver.Id == loggedInUser.Id)
+    {
+        friendRequests.Add(item);
+        HaveFriendRequest = true;
     }
 }
 
@@ -47,8 +62,39 @@
 
 }
 
-else
+@if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == false)
 {
+    <div class="text-center">
+        <h1>Du har inte fixat din profilsida ännu!</h1>
+        <h2>Klicka här för att komma dit: </h2>
+        <a href="Users/Create">Redigera profil</a>
+    </div>
+
+}
+
+@if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == true)
+{
+    if (HaveFriendRequest)
+    {
+        <div style="overflow: hidden">
+            <marquee>
+                <p id="vänförfrågan">
+                    Du har fått vänförfrågning av: &nbsp;
+
+                    <!--Loopa genom FriendRequests och se ifall den inloggade
+                    fått friendrequest-->
+                    <!--Skriv ut de som skickat vänförfrågan-->
+                    @foreach (var item in friendRequests)
+                    {
+                        string senderName = item.Sender.FirstName + " " + item.Sender.LastName;
+                        <a id="friendRequestSlider" href="Users/Details/@item.Sender.Id">@senderName &nbsp; &nbsp;</a>
+                    }
+                </p>
+            </marquee>
+        </div>
+    }
+
+
     <h1 id="HeaderText">@name</h1>
 
     <div class="StoraDiven">
@@ -267,7 +313,7 @@ else
             url: "/api/FriendRequests/" + FriendRequestId,
             type: 'DELETE',
             contentType: "application/json; charset=utf-8",
-            
+
         })
     }
 
@@ -356,4 +402,32 @@ else
         border-color: black;
         border-radius: 2em;
     }
+
+    .marquee {
+        margin: 0 auto;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+        .marquee span {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 5s linear infinite;
+        }
+
+    #vänförfrågan {
+        background-image: linear-gradient(to left, violet, indigo, blue, green, orange, red, violet, indigo, blue, green, orange, red, violet, indigo, blue, green, orange, red, violet, indigo, blue, green, orange, red);
+        -webkit-background-clip: text;
+        color: transparent;
+    }
+
+    #friendRequestSlider {
+        text-decoration: none;
+        color: blue;
+    }
+
+        #friendRequestSlider:hover {
+            text-decoration: underline;
+            color: red;
+        }
 </style>

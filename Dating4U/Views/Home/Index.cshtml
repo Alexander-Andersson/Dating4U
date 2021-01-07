@@ -5,9 +5,9 @@
 
 @model UserView
 
-    <audio controls>
-        <source src="~/Starwars.mp3" type="audio/mpeg">
-    </audio>
+<audio controls>
+    <source src="~/Starwars.mp3" type="audio/mpeg">
+</audio>
 
 
 @{
@@ -27,9 +27,6 @@
         ProfilRegistrerad = true;
         _user = item;
     }
-    else
-    {
-    }
 }
 
 @foreach (var item in Model.FriendRequests)
@@ -41,6 +38,13 @@
     }
 }
 
+@if (!SignInManager.IsSignedIn(User))
+{
+<div class="text-center">
+    <h1 class="display-4">Vill du ta del av dessa läckra singlar?</h1>
+    <a href="/Identity/Account/Register"><p>Registrera dig gratis</p></a>
+</div>
+}
 
 @if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == false)
 {
@@ -62,12 +66,12 @@
                     Du har fått vänförfrågning av: &nbsp;
 
                     <!--Loopa genom FriendRequests och se ifall den inloggade
-    fått friendrequest-->
+                    fått friendrequest-->
                     <!--Skriv ut de som skickat vänförfrågan-->
                     @foreach (var item in friendRequests)
                     {
                         string senderName = item.Sender.FirstName + " " + item.Sender.LastName;
-                    <a id ="friendRequestSlider"href="Users/Details/@item.Sender.Id">@senderName &nbsp; &nbsp;</a>
+                        <a id="friendRequestSlider" href="Users/Details/@item.Sender.Id">@senderName &nbsp; &nbsp;</a>
                     }
                 </p>
             </marquee>
@@ -78,13 +82,6 @@
     <div class="text-center">
         <h1 class="display-4">Hej @_user.FirstName!</h1>
         <h2 class="display-5">Här kommer massa snygga singlar</h2>
-    </div>
-}
-
-@if (!SignInManager.IsSignedIn(User))
-{
-    <div class="text-center">
-        <h1 class="display-4">Vill du ta del av dessa läckra singlar?</h1>
     </div>
 }
 
@@ -121,7 +118,7 @@ else
     .profil {
         width: 25%;
         height: auto;
-        margin-bottom: 2em;
+        margin-bottom: 8em;
         margin-top: 2em;
         float: left;
     }
@@ -150,28 +147,29 @@ else
         overflow: hidden;
     }
 
-    .marquee span {
+        .marquee span {
             display: inline-block;
             padding-left: 100%;
             animation: marquee 5s linear infinite;
         }
 
     #vänförfrågan {
-        background-image: linear-gradient(to left, violet, indigo, blue, green, 
-        orange, red, violet, indigo, blue, green, orange, red,
-        violet, indigo, blue, green,
-        orange, red, violet, indigo, blue, green, orange, red);
+        background-image: linear-gradient(to left, violet, indigo, blue, green, orange, red, violet, indigo, blue, green, orange, red, violet, indigo, blue, green, orange, red, violet, indigo, blue, green, orange, red);
         -webkit-background-clip: text;
         color: transparent;
     }
 
     #friendRequestSlider {
         text-decoration: none;
-        color: black;
+        color: blue;
     }
 
-    #friendRequestSlider:hover {
-        text-decoration: none;
-        color: red;
+        #friendRequestSlider:hover {
+            text-decoration: underline;
+            color: red;
+        }
+
+    .border-top footer text-muted {
+        margin-top: 2em;
     }
 </style>

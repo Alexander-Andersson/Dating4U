@@ -3,7 +3,7 @@
 @inject UserManager<IdentityUser> UserManager
 @using DataLayer.Models
 
-@model IEnumerable<DataLayer.Models.User>
+@model UserView
 
 @{
     ViewData["Title"] = "Utforska singlar";
@@ -12,20 +12,35 @@
 
 @{bool ProfilRegistrerad = false;
     List<User> listUser = new List<User>();
-    listUser = Model.ToList();    }
+    listUser = Model.Users.ToList();
+    bool HaveFriendRequest = false;
+
+    User _user = new User();
+    List<FriendRequest> friendRequests = new List<FriendRequest>();
+}
 
 <!--Checkar ifall användaren är inloggad och har fixat sin profil-->
 <!--Ifall namnet i AspNetUsers-tabellen är densamma som namnet i User-tabellen,
     då dessa är löst ihopkopplade-->
-@foreach (var item in Model)
+@foreach (var item in listUser)
 {
     if (SignInManager.IsSignedIn(User) && User.Identity.Name.Equals(item.UserName))
     {
         ProfilRegistrerad = true;
-<!--Om användaren ej är inloggad-->
+        _user = item;
     }
 }
 
+@foreach (var item in Model.FriendRequests)
+{
+    if (item.Receiver.Id == _user.Id)
+    {
+        friendRequests.Add(item);
+        HaveFriendRequest = true;
+    }
+}
+
+<!--Om användaren ej är inloggad-->
 @if (!SignInManager.IsSignedIn(User))
 {
     <div class="text-center">
@@ -37,45 +52,69 @@
     </div>
 }
 
-//Om användaren är inloggad men ej har satt upp sin profil
-else if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == false)
+<!--Om användaren är inloggad men ej har satt upp sin profil-->
+@if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == false)
 {
-<div class="text-center">
-    <h1>Du har inte fixat din profilsida ännu!</h1>
-    <h2>Klicka här för att komma dit: </h2>
-    <a href="/Users/Create">Skapa profil</a>
-</div>
+    <div class="text-center">
+        <h1>Du har inte fixat din profilsida ännu!</h1>
+        <h2>Klicka här för att komma dit: </h2>
+        <a href="/Users/Create">Skapa profil</a>
+    </div>
 }
 
-//KOD SOM KÖRS NÄR ANVÄNDAREN ÄR INLOGGAD OCH HAR SATT UPP SIN PROFIL
-else
+<!--KOD SOM KÖRS NÄR ANVÄNDAREN ÄR INLOGGAD OCH HAR SATT UPP SIN PROFIL-->
+@if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == true)
 {
-<div class="text-center">
-    <h1>Ta chansen att hitta din nya señor eller señorita ;)</h1>
-    <input type="text" value="Sök på namn..." id="searchInput" />  &nbsp; <button id="searchBtn">Sök</button>
-    &nbsp; &nbsp; &nbsp; &nbsp;<a href="/Home/Explore"><p>Rensa sök<p></a>
-</div>
-
-<!--Div och loop för att visa alla nuvarande profiler-->
-<!--User-modellen och dess items används för att ta fram
-    Id, bildUrl och namn-->
-<!--Loop som ger inkrementerat id på alla taggar för varje profil.
-    För att senare kunna användas-->
-<div id="storDiv">
-
-    @for (int i = 0; i < listUser.Count; i++)
+    //Kod för visa vänförfrågnings-headern
+    if (HaveFriendRequest)
     {
-        string name = listUser[i].FirstName + " " + listUser[i].LastName;
+        <div style="overflow: hidden">
+            <marquee>
+                <p id="vänförfrågan" style="overflow-x: hidden">
+                    Du har fått vänförfrågning av: &nbsp;
 
-        <div class="profil" id="profil @i">
-            <a href="/Users/Details/@listUser[i].Id" id="profileLink @i">
-                <img class="profilBild" src="@listUser[i].ProfilePicture" id="profilePicture @i" />
-                <p id="textUsernameExplore @i">@name</p>
-            </a>
+                    <!--Loopa genom FriendRequests och se ifall den inloggade
+                    fått friendrequest-->
+                    <!--Skriv ut de som skickat vänförfrågan-->
+                    @foreach (var item in friendRequests)
+                    {
+                        string senderName = item.Sender.FirstName + " " + item.Sender.LastName;
+                    <a id="friendRequestSlider" href="Users/Details/@item.Sender.Id">@senderName &nbsp;</a>
+                    }
+                </p>
+            </marquee>
         </div>
     }
 
-</div>
+    <div class="text-center">
+        <h1>Ta chansen att hitta din nya señor eller señorita ;)</h1>
+        <input type="text" value="Sök på namn..." id="searchInput" />  &nbsp; <button id="searchBtn">Sök</button>
+        &nbsp; &nbsp; &nbsp; &nbsp;<input type="submit" value="Rensa sök" onclick="location.href = '/Home/Explore';"/>
+    </div>
+
+    <!--Div och loop för att visa alla nuvarande profiler-->
+    <!--User-modellen och dess items används för att ta fram    
+        Id, bildUrl och namn-->
+    <!--Loop som ger inkrementerat id på alla taggar för varje profil.
+        För att senare kunna användas-->
+
+
+        @for (int i = 0; i < listUser.Count; i++)
+        {
+            string name = listUser[i].FirstName + " " + listUser[i].LastName;
+
+            <div class="profil" id="profil @i">
+                <a href="/Users/Details/@listUser[i].Id" id="profileLink @i" class="profileText">
+                    <img class="profilBild" src="@listUser[i].ProfilePicture" id="profilePicture @i" />
+                    <p id="textUsernameExplore @i" class="profileText">@name</p>
+                </a>
+                
+                    
+                
+            </div>
+        }
+
+}
 
 
 <script>
@@ -92,7 +131,7 @@ else
 
         //Namn måste vara längre än 2
         //och endast innehålla bokstäver
-        if (/^([a-z]){3,}/i.test(inputNamn)) {
+        if (/^([a-ö]){3,}/i.test(inputNamn)) {
             inputKorrekt = true;
         }
 
@@ -143,28 +182,66 @@ else
 </script>
 
 <style>
-    #textUsernameExplore {
-        text-align: center;
+    #storDiv {
+        margin-bottom: 2em;
+    }
+
+    .profileText{
+        color:mediumvioletred;
+    }
+    .profileText:hover {
+        text-decoration-color: mediumvioletred;
+        color: mediumvioletred;
     }
 
     .profil {
-        width: 25%;
-        height: auto;
-        margin-bottom: 2em;
+        width: 20%;
+        height: 200px;
+        margin-bottom: .2em;
         margin-top: 2em;
         float: right;
+        text-align: center;
     }
 
     .profilBild {
         display: block;
-        min-width: 50%;
-        min-height: 50%;
-        max-width: 50%;
-        max-height: 50%;
+        min-width: 80%;
+        min-height: 80%;
+        max-width: 80%;
+        max-height: 80%;
         margin-right: auto;
         margin-left: auto;
         padding: 0;
     }
-</style>
 
-}
+    .marquee {
+        margin: 0 auto;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .marquee span {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 5s linear infinite;
+        }
+
+    #vänförfrågan {
+        background-image: linear-gradient(to left, violet, indigo, blue, green, 
+        orange, red, violet, indigo, blue, green, orange, red,
+        violet, indigo, blue, green,
+        orange, red, violet, indigo, blue, green, orange, red);
+        -webkit-background-clip: text;
+        color: transparent;
+    }
+
+    #friendRequestSlider {
+        text-decoration: none;
+        color: blue;
+    }
+
+    #friendRequestSlider:hover {
+        text-decoration: underline;
+        color: red;
+    }
+</style>

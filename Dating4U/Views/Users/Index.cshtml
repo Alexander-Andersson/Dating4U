@@ -11,24 +11,39 @@
     User _user = new User();
 }
 
-@foreach (var item in Model.Users)
-{
-    if (item.UserName.Equals(User.Identity.Name))
-    {
-        _user = item;
-    }
-}
 @{
     bool ProfilRegistrerad = false;
+    bool HaveFriendRequest = false;
+
     string name = _user.FirstName + " " + _user.LastName;
     string age = _user.Age.ToString() + " år gammal";
     string editProfileUrl = "/Users/Edit/" + _user.Id;
     List<User> friendList = new List<User>();
+
+    List<FriendRequest> friendRequests = new List<FriendRequest>();
+}
+
+@foreach (var item in Model.Users)
+{
+    if (SignInManager.IsSignedIn(User) && User.Identity.Name.Equals(item.UserName))
+    {
+        _user = item;
+        ProfilRegistrerad = true;
+    }
+}
+
+@foreach (var item in Model.FriendRequests)
+{
+    if (item.Receiver.Id == _user.Id)
+    {
+        friendRequests.Add(item);
+        HaveFriendRequest = true;
+    }
 }
 
 @foreach (var item in Model.Friends)
 {
-    if(item.Friend_1.Id == _user.Id)
+    if (item.Friend_1.Id == _user.Id)
     {
         friendList.Add(item.Friend_2);
     }
@@ -39,13 +54,7 @@
     }
 }
 
-@foreach (var item in Model.Users)
-{
-    if (SignInManager.IsSignedIn(User) && User.Identity.Name.Equals(item.UserName))
-    {
-        ProfilRegistrerad = true;
-    }
-}
+
 
 @if (!SignInManager.IsSignedIn(User))
 {
@@ -59,7 +68,7 @@
     </div>
 }
 
-else if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == false)
+@if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == false)
 {
     <div class="text-center">
         <h1>Du har inte fixat din profilsida ännu!</h1>
@@ -68,8 +77,28 @@ else if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == false)
     </div>
 }
 
-else
+@if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == true)
 {
+    if (HaveFriendRequest)
+    {
+        <div style="overflow: hidden">
+            <marquee>
+                <p id="vänförfrågan">
+                    Du har fått vänförfrågning av: &nbsp;
+
+                    <!--Loopa genom FriendRequests och se ifall den inloggade
+                    fått friendrequest-->
+                    <!--Skriv ut de som skickat vänförfrågan-->
+                    @foreach (var item in friendRequests)
+                    {
+                        string senderName = item.Sender.FirstName + " " + item.Sender.LastName;
+                        <a id="friendRequestSlider" href="Users/Details/@item.Sender.Id">@senderName &nbsp; &nbsp;</a>
+                    }
+                </p>
+            </marquee>
+        </div>
+    }
+
     <h1 id="HeaderText">@name</h1>
 
     <div class="StoraDiven">
@@ -140,7 +169,7 @@ else
 
             </div>
 
-            
+
         </div>
     </div>
 }
@@ -273,11 +302,39 @@ else
         width: auto;
     }
 
-    ul{
+    ul {
         width: auto;
     }
 
     #friendLink:hover {
+        color: red;
+    }
+
+    .marquee {
+        margin: 0 auto;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .marquee span {
+        display: inline-block;
+        padding-left: 100%;
+        animation: marquee 5s linear infinite;
+    }
+
+    #vänförfrågan {
+        background-image: linear-gradient(to left, violet, indigo, blue, green, orange, red, violet, indigo, blue, green, orange, red, violet, indigo, blue, green, orange, red, violet, indigo, blue, green, orange, red);
+        -webkit-background-clip: text;
+        color: transparent;
+    }
+
+    #friendRequestSlider {
+        text-decoration: none;
+        color: blue;
+    }
+
+    #friendRequestSlider:hover {
+        text-decoration: underline;
         color: red;
     }
 </style>
