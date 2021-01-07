@@ -17,6 +17,7 @@
 
     User _user = new User();
     List<FriendRequest> friendRequests = new List<FriendRequest>();
+    List<User> searchableUsers = new List<User>();
 }
 
 <!--Checkar ifall användaren är inloggad och har fixat sin profil-->
@@ -98,26 +99,32 @@
     <!--Loop som ger inkrementerat id på alla taggar för varje profil.
         För att senare kunna användas-->
 
-
+    <div id="storDiv">
         @for (int i = 0; i < listUser.Count; i++)
         {
+            //Lägger till Usern i searchable listan om Userns IsNotSearchable property är false
+            if (listUser[i].IsNotSearchable == false)
+            {
+                searchableUsers.Add(listUser[i]);
+            }
             string name = listUser[i].FirstName + " " + listUser[i].LastName;
 
-            <div class="profil" id="profil @i">
+            <div class="profil" id="profil @listUser[i].Id">
                 <a href="/Users/Details/@listUser[i].Id" id="profileLink @i" class="profileText">
                     <img class="profilBild" src="@listUser[i].ProfilePicture" id="profilePicture @i" />
                     <p id="textUsernameExplore @i" class="profileText">@name</p>
                 </a>
-                
-                    
-                
             </div>
-        }
 
+        }
+    </div>
 }
 
 
 <script>
+    //Serializerar searchableUsers
+    var searchableUsers = @Html.Raw(Json.Serialize(searchableUsers));
+
     //Script för att ta fram profil av det angivna namnet i sökrutan
     //OnClick-event
     var searchKnapp = document.getElementById("searchBtn");
@@ -144,32 +151,52 @@
         //Lagra den profilen i variabler, rensa bland alla profiler på sidan
         //och lägg sedan till den hittade profilen
         if (inputKorrekt) {
-
-            //Först ska antalet profiler räknas
-            var antalProfiler = 0;
-            var i = 0;
-            while (document.getElementById("profil " + i) != null) {
-                antalProfiler++
-                i++
-            }
+            console.log("1")
+            ////Först ska antalet profiler räknas
+            //var antalProfiler = 0;
+            //var i = 0;
+            //while (document.getElementById("profil " + i) != null) {
+            //    antalProfiler++
+            //    i++
+            //}
+            
+            var element = document.getElementById("storDiv");
+            var divArray = [];
+            var j = 0;
 
             //Sedan loopas namnet på alla profiler genom.
             //Den matchande profilen registreras
-            for (var i = 0; i < antalProfiler; i++) {
-                var profileName = document.getElementById("textUsernameExplore " + i).innerText
-
+            for (var i = 0; i < searchableUsers.length; i++) {
+                var profileName = searchableUsers[i].firstName + " " + searchableUsers[i].lastName//document.getElementById("textUsernameExplore " + i).innerText
                 if (profileName.includes(inputNamn)) {
-                    var profile = document.getElementById("profil " + i)
-                    console.log(profile)
+                    var profile = document.getElementById("profil " + searchableUsers[i].id)
+                    //console.log(i)
+                    divArray[j] = profile;
+                    //console.log(divArray[i]);
+                    j++;
                 }
 
             }
-            //Rensa alla profiler
-            $('.profil').remove();
+            console.log(divArray);
+            //for (var i = 0; i < divArray.length; i++) {
+            //    var j = 0;
+            //    console.log(divArray[j]);
+            //    j++;
+            //}
 
-            //Kod för att skriva in profilen
-            var element = document.getElementById("storDiv");
-            element.appendChild(profile);
+            //rensa alla profiler
+            $('.profil').remove();
+            //var element = document.getElementById("stordiv");
+            var x = 0;
+            for (var i = 0; i < divArray.length; i++) {
+                var profileSearched = divArray[x];
+                console.log(profileSearched);
+                document.getElementById("storDiv").appendChild(profileSearched);
+                x++;
+            }
+            ////kod för att skriva in profilen
+            //var element = document.getelementbyid("stordiv");
+            //element.appendchild(profile);
 
             //Inaktivera sök-knappen efter en sökning
             //Klicka på rensa sök för att återställa

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DataLayer.DatabaseContext;
 using DataLayer.Models;
 using Dating4U.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Dating4U.Controllers
 {
@@ -34,6 +35,14 @@ namespace Dating4U.Controllers
         // GET: Users/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            User loggedInUser = new User();
+            foreach(var item in _context.User)
+{
+                if (User.Identity.Name.Equals(item.UserName))
+                {
+                    loggedInUser = item;
+                }
+            }
             if (id == null)
             {
                 return NotFound();
@@ -48,8 +57,14 @@ namespace Dating4U.Controllers
                 return NotFound();
             }
 
+            
+
             UserDetails userDetails = new UserDetails();
             userDetails.Id = user.Id;
+                if(loggedInUser.Id == userDetails.Id)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
             userDetails.UserName = user.UserName;
             userDetails.FirstName = user.FirstName;
             userDetails.LastName = user.LastName;
@@ -75,7 +90,7 @@ namespace Dating4U.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserName,FirstName,LastName,Age,Gender,Description,ProfilePicture")] User user)
+        public async Task<IActionResult> Create([Bind("Id,UserName,FirstName,LastName,Age,Gender,Description,ProfilePicture,IsSearchable")] User user)
         {
             if (ModelState.IsValid)
             {
@@ -107,7 +122,7 @@ namespace Dating4U.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserName,FirstName,LastName,Age,Gender,Description,ProfilePicture")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,UserName,FirstName,LastName,Age,Gender,Description,ProfilePicture,IsSearchable")] User user)
         {
             if (id != user.Id)
             {

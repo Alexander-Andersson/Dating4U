@@ -4,9 +4,9 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1>Redigera Uppgifter</h1>
 
-<h4>User</h4>
+<h4>@{@Model.FirstName}</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -15,7 +15,7 @@
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label>Email</label>
-                <input asp-for="UserName" class="form-control" readonly/>
+                <input asp-for="UserName" class="form-control" readonly />
                 <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -46,8 +46,14 @@
             <div class="form-group">
                 @*<label asp-for="ProfilePicture" class="control-label"></label>*@
                 <label>Profilbild(URL)</label>
-                <input asp-for="ProfilePicture" class="form-control" accept="image/x-png, image/jpeg, image/gif"/>
+                <input asp-for="ProfilePicture" class="form-control" accept="image/x-png, image/jpeg, image/gif" />
                 <span asp-validation-for="ProfilePicture" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Vill du inte vara sökbar?</label>
+                <p style="font-size:small">Klicka i checkrutan ifall andra användare inte ska kunna hitta dig genom vår sökfunktion.<br />Användare kommer fortfarande kunna hitta din profilsida i Utforska men de kan inte söka efter dig.</p>
+                <input asp-for="IsNotSearchable" class="form-control" />
+                <span asp-validation-for="IsNotSearchable" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

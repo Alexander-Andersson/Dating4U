@@ -51,6 +51,11 @@
                 <span asp-validation-for="ProfilePicture" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label>Vill du vara sökbar?</label>
+                <input asp-for="IsNotSearchable" class="form-control" />
+                <span asp-validation-for="IsNotSearchable" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
