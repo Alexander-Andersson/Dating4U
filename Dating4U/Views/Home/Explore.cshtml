@@ -115,17 +115,19 @@
 
     @for (int i = 0; i < listUser.Count; i++)
     {
-        string name = listUser[i].FirstName + " " + listUser[i].LastName;
+        //Check ifall kontot är inaktiverat
+        if (listUser[i].IsInactivated == false)
+        {
+            string name = listUser[i].FirstName + " " + listUser[i].LastName;
 
-        <div class="profil" id="profil @i">
-            <a href="/Users/Details/@listUser[i].Id" id="profileLink @i" class="profileText">
-                <img class="profilBild" src="@listUser[i].ProfilePicture" id="profilePicture @i" />
-                <p id="textUsernameExplore @i" class="profileText">@name</p>
-            </a>
+            <div class="profil" id="profil @i">
+                <a href="/Users/Details/@listUser[i].Id" id="profileLink @i" class="profileText">
+                    <img class="profilBild" src="@listUser[i].ProfilePicture" id="profilePicture @i" />
+                    <p id="textUsernameExplore @i" class="profileText">@name</p>
+                </a>
+            </div>
+        }
 
-
-
-        </div>
     }
 
 }
