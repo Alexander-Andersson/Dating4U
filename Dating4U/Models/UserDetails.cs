@@ -16,6 +16,7 @@ namespace Dating4U.Models
         public string Gender { get; set; }
         public string Description { get; set; }
         public string ProfilePicture { get; set; }
+        public string Hobby { get; set; }
 
         public List<UserWall> Messages { get; set; }
         public List<User> Users { get; set; }

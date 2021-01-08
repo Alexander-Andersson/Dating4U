@@ -27,12 +27,12 @@
             </div>
             <div class="form-group">
                 <label>Efternamn</label>
-                <input asp-for="LastName" class="form-control" required/>
+                <input asp-for="LastName" class="form-control" required />
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label>Ålder</label>
-                <input type="number" asp-for="Age" min="18" max="99" step="1" class="form-control" required/>
+                <input type="number" asp-for="Age" min="18" max="99" step="1" class="form-control" required />
                 <span asp-validation-for="Age" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -50,6 +50,13 @@
                 <label>Profilbild(URL)</label>
                 <input asp-for="ProfilePicture" class="form-control" required />
                 <span asp-validation-for="ProfilePicture" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Vad skulle du göra på första dejten?</label>
+                Fågelskådning:  <input asp-for="Hobby" type="radio" class="form-control" name="Hobby" id="RadioBox" value="Fågelskådning" checked>
+                Surfning: <input asp-for="Hobby" type="radio" class="form-control" name="Hobby" id="RadioBox" value="Surfning">
+                Rita bilder i paint: <input asp-for="Hobby" type="radio" class="form-control" name="Hobby" id="RadioBox" value="Rita bilder i paint">
+                <span asp-validation-for="Hobby" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

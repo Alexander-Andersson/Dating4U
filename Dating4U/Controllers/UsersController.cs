@@ -56,6 +56,7 @@ namespace Dating4U.Controllers
             userDetails.Age = user.Age;
             userDetails.Gender = user.Gender;
             userDetails.Description = user.Description;
+            userDetails.Hobby = user.Hobby;
             userDetails.ProfilePicture = user.ProfilePicture;
             userDetails.Messages = await _context.UserWall.ToListAsync();
             userDetails.Users = await _context.User.ToListAsync();
@@ -75,7 +76,7 @@ namespace Dating4U.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserName,FirstName,LastName,Age,Gender,Description,ProfilePicture")] User user)
+        public async Task<IActionResult> Create([Bind("Id,UserName,FirstName,LastName,Age,Gender,Description,Hobby,ProfilePicture")] User user)
         {
             if (ModelState.IsValid)
             {
@@ -107,7 +108,7 @@ namespace Dating4U.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserName,FirstName,LastName,Age,Gender,Description,ProfilePicture")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,UserName,FirstName,LastName,Age,Gender,Description,Hobby,ProfilePicture")] User user)
         {
             if (id != user.Id)
             {

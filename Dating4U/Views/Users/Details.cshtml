@@ -28,6 +28,7 @@
     profile.Gender = Model.Gender;
     profile.Description = Model.Description;
     profile.ProfilePicture = Model.ProfilePicture;
+    profile.Hobby = Model.Hobby;
 
     bool HaveFriendRequest = false;
     List<FriendRequest> friendRequests = new List<FriendRequest>();
@@ -116,6 +117,11 @@
                 <h4>Om mig</h4>
                 <p class="ProfilText">@Model.Description</p>
             </div>
+            <div>
+                <h4>Min hobby</h4>
+                <p class="ProfilText">@Model.Hobby</p>
+            </div>
+
             <br />
             <p id="friendRequestText"></p>
             <input type="button" value="Lägg till vän" id="AddFriendBtn" />
