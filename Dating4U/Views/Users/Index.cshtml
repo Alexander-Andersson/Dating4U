@@ -25,7 +25,6 @@
 @{
     
     bool HaveFriendRequest = false;
-
     string name = _user.FirstName + " " + _user.LastName;
     string age = _user.Age.ToString() + " år gammal";
     string editProfileUrl = "/Users/Edit/" + _user.Id;
@@ -163,9 +162,11 @@
                                 }
                             }
                             string senderMessage = senderName + ": " + item.Message;
-
-                            <p id="wallText">@senderMessage</p>
+                            <div id="msgDiv @item.Id">
+                            <p class="wallText">@senderMessage</p>
+                            <a onclick=removeMessage(@item.Id) href="#"><p class="removeMsg">Ta bort meddelande</p></a>
                             <hr />
+                            </div>
                         }
 
                     }
@@ -218,7 +219,23 @@
         }
         else
             alert("Rutan får inte vara tom!")
+    }
 
+    function removeMessage(id) {
+        if (confirm('Är du säker på att du vill ta bort meddelandet?')) {
+            $.ajax({
+                url: "/api/UserWalls/" + id,
+                type: 'DELETE',
+                contentType: "application/json; charset=utf-8",
+                success: alert("Meddelandet har tagits bort!")
+            })
+            var element = document.getElementById('TheWall');
+            var elementToBeRemoved = document.getElementById('msgDiv ' + id);
+            element.removeChild(elementToBeRemoved);
+        }
+        else {
+            return;
+        }
     }
 </script>
 
@@ -263,7 +280,7 @@
         border-radius: 1em;
     }
 
-    #wallText {
+    .wallText {
         margin-left: 1em;
         margin-right: 1em;
         margin-top: .5em;
@@ -337,8 +354,17 @@
         color: blue;
     }
 
-        #friendRequestSlider:hover {
-            text-decoration: underline;
-            color: red;
-        }
+    #friendRequestSlider:hover {
+        text-decoration: underline;
+        color: red;
+    }
+
+    .removeMsg {
+        color: red;
+        font-size: x-small;
+        margin-left: 2em;
+    }
+    .removeMsg:hover{
+        text-decoration: underline;
+    }
 </style>
