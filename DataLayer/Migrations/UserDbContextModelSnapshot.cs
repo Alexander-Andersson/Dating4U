@@ -84,6 +84,8 @@ namespace DataLayer.Migrations
 
                     b.Property<bool>("IsNotSearchable")
                         .HasColumnType("bit");
+                    b.Property<string>("Hobby")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");

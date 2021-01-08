@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20210106114419_miFriends")]
-    partial class miFriends
+    [Migration("20210108092423_migHobby1")]
+    partial class migHobby1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -82,6 +82,9 @@ namespace DataLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Hobby")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
