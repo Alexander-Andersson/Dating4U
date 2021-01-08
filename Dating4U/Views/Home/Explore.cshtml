@@ -162,35 +162,29 @@
             
             var element = document.getElementById("storDiv");
             var divArray = [];
+            //index för divArray
             var j = 0;
-
+            var inputNamnLower = inputNamn.toLowerCase();
             //Sedan loopas namnet på alla profiler genom.
-            //Den matchande profilen registreras
+            //De matchande profilerna läggs till i divArray
             for (var i = 0; i < searchableUsers.length; i++) {
                 var profileName = searchableUsers[i].firstName + " " + searchableUsers[i].lastName//document.getElementById("textUsernameExplore " + i).innerText
-                if (profileName.includes(inputNamn)) {
+                var profileNameLower = profileName.toLowerCase();
+                if (profileNameLower.includes(inputNamnLower)) {
                     var profile = document.getElementById("profil " + searchableUsers[i].id)
-                    //console.log(i)
                     divArray[j] = profile;
-                    //console.log(divArray[i]);
                     j++;
                 }
 
             }
-            console.log(divArray);
-            //for (var i = 0; i < divArray.length; i++) {
-            //    var j = 0;
-            //    console.log(divArray[j]);
-            //    j++;
-            //}
 
             //rensa alla profiler
             $('.profil').remove();
-            //var element = document.getElementById("stordiv");
+            //index för divArray
             var x = 0;
+            //Alla items i divArray kommer upp på sidan
             for (var i = 0; i < divArray.length; i++) {
                 var profileSearched = divArray[x];
-                console.log(profileSearched);
                 document.getElementById("storDiv").appendChild(profileSearched);
                 x++;
             }
@@ -205,7 +199,6 @@
         }
 
     }
-
 </script>
 
 <style>
