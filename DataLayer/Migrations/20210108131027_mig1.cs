@@ -2,7 +2,7 @@
 
 namespace DataLayer.Migrations
 {
-    public partial class migHobby1 : Migration
+    public partial class mig1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -19,6 +19,7 @@ namespace DataLayer.Migrations
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProfilePicture = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsNotSearchable = table.Column<bool>(type: "bit", nullable: false),
                     Hobby = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>

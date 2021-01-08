@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20210107141700_IsNotSearchable")]
-    partial class IsNotSearchable
+    [Migration("20210108131027_mig1")]
+    partial class mig1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -82,6 +82,9 @@ namespace DataLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Hobby")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsNotSearchable")
