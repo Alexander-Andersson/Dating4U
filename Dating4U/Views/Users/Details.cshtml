@@ -123,6 +123,10 @@
             </div>
 
             <br />
+                <p id="PassarViIhopText"></p>
+            <input type="button" value="Passar vi ihop?" id="PassarViIhopBtn" />
+
+
             <p id="friendRequestText"></p>
             <input type="button" value="Lägg till vän" id="AddFriendBtn" />
         </div>
@@ -272,7 +276,9 @@
 
         btnAddFriend.addEventListener("click", SendFriendRequest);
     }
-        
+
+
+
     //Funktion för att lägga till vän
     //Fungerar på samma sätta som skript för skicka meddelande.
     //Sparar datan i ett Json-objekt som skickas till
@@ -297,6 +303,43 @@
     if (btnAddFriend.disabled == false && btnAddFriend.id == "confirmAddFriendBtn") {
         btnAddFriend.addEventListener("click", confirmFriendRequest)
     }
+
+
+    //Funktion för att kolla om 2 användare passar bra ihop
+
+   PassarViIhopBtn.addEventListener("click", PassarViIhop)
+
+ 
+    var Hobby = @Html.Raw(Json.Serialize(Model.Hobby));
+    var HobbyInloggad = inloggad.hobby;
+    console.log(Hobby);
+    console.log(HobbyInloggad);
+    function PassarViIhop() {
+
+        if (Hobby === HobbyInloggad || HobbyInloggad === Hobby) {
+            console.log("true");
+            document.getElementById("PassarViIhopText").innerHTML = "Ni passar bra ihop! Kanske en dejt?";
+        }
+        else {
+            document.getElementById("PassarViIhopText").innerHTML = "Era intressen matchar inte!";
+        }
+    }
+ 
+
+
+  //function PassarViIhop() {
+  //    if (Hobby === HobbyInloggad) {
+
+  //        console.log("JA");
+
+  //    }
+  //    else {
+  //        console.log("nej");
+  //    }
+
+
+
+    //}
 
     //Funktion för att bekräfta förfrågan
     function confirmFriendRequest() {
