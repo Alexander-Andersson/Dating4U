@@ -17,5 +17,6 @@ namespace DataLayer.DatabaseContext
         public DbSet<Friends> Friends { get; set; }
         public DbSet<FriendRequest> FriendRequests { get; set; }
         public DbSet<UserWall> UserWall { get; set; }
+        public DbSet<LatestVisitors> LatestVisitors { get; set; }
     }
 }

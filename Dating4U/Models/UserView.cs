@@ -15,5 +15,6 @@ namespace Dating4U.Models
         public List<Friends> Friends { get; set; }
 
         public List<FriendRequest> FriendRequests { get; set; }
+        public List<LatestVisitors> Visitors { get; set; }
     }
 }

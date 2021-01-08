@@ -13,6 +13,8 @@
     bool ProfilRegistrerad = false;
 }
 
+<!--Tilldela _user värden för den som är inloggad
+    och sätt ProfilRegistrerad till true-->
 @foreach (var item in Model.Users)
 {
     if (SignInManager.IsSignedIn(User) && User.Identity.Name.Equals(item.UserName))
@@ -23,7 +25,6 @@
 }
 
 @{
-    
     bool HaveFriendRequest = false;
 
     string name = _user.FirstName + " " + _user.LastName;
@@ -35,7 +36,7 @@
 }
 
 
-
+<!--Leta efter friendrequests att visa-->
 @foreach (var item in Model.FriendRequests)
 {
     if (item.Receiver.Id == _user.Id)
@@ -45,6 +46,7 @@
     }
 }
 
+<!--Fyll på vänlistan-->
 @foreach (var item in Model.Friends)
 {
     if (item.Friend_1.Id == _user.Id)
@@ -59,7 +61,7 @@
 }
 
 
-
+<!--Om ej inloggad-->
 @if (!SignInManager.IsSignedIn(User))
 {
     <div class="text-center">
@@ -72,6 +74,7 @@
     </div>
 }
 
+<!--Om inloggad men ej satt upp sin profil-->
 @if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == false)
 {
     <div class="text-center">
@@ -81,10 +84,12 @@
     </div>
 }
 
+<!--Om inloggad och satt up sin profil-->
 @if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == true)
 {
     if (HaveFriendRequest)
     {
+        <!--Visa vänförfrågningar-->
         <div style="overflow: hidden">
             <marquee>
                 <p id="vänförfrågan">
@@ -103,6 +108,8 @@
         </div>
     }
 
+    <!--Info om användaren-->
+    <!--Vänstra delen av sidan-->
     <h1 id="HeaderText">@name</h1>
 
     <div class="StoraDiven">
@@ -127,10 +134,15 @@
             <div class="Friends">
                 <h4>Vänner</h4>
                 <ul>
+                    <!--Fyll på vänlista-->
                     @foreach (var item in friendList)
                     {
-                        string friendName = item.FirstName + " " + item.LastName;
-                        <a id="friendLink" href="/Users/Details/@item.Id"><li>@friendName</li></a>
+                        //Om friend-kontot är inaktiverat ska det ej visas
+                        if (item.IsInactivated == false)
+                        {
+                            string friendName = item.FirstName + " " + item.LastName;
+                            <a id="friendLink" href="/Users/Details/@item.Id"><li>@friendName</li></a>
+                        }
                     }
                 </ul>
             </div>
@@ -140,8 +152,28 @@
             <br />
             <a href="/Identity/Account/Manage">Redigera Inloggningsuppgifter</a>
 
+            <!--Högra delen av sidan-->
         </div>
         <div class="Väggen">
+            <!--Skriv ut de som nyligen besökt sidan-->
+            <div id="senastBesokta">
+                <h6>
+                    Användare som nyligen besökt din sida:
+                </h6>
+                <p>
+                    @foreach (var item in Model.Visitors)
+                    {
+                        @if (item.ProfileVisited.Id == _user.Id)
+                        {
+                            string visitedBy = item.VisitedBy.FirstName + " " + item.VisitedBy.LastName;
+                            <a href="/Users/Details/@item.VisitedBy.Id">@visitedBy &nbsp;</a>
+                        }
+
+                    }
+                <p>
+            </div>
+            <br />
+
             <h4>Vägg</h4>
             <textarea id="txtAreaMsg" type="text" rows="5" cols="60" name="description"></textarea><input type="button" value="Skicka Meddelande" id="MessageBtn" />
             <div id="TheWall">
@@ -172,7 +204,6 @@
                 }
 
             </div>
-
 
         </div>
     </div>
@@ -252,6 +283,13 @@
         width: 60%;
         height: auto;
         margin-left: 5%;
+    }
+
+    #senastBesokta {
+        width: 70%;
+        border: solid;
+        border-width: .03em;
+        text-align: center;
     }
 
     #TheWall {

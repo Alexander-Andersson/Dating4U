@@ -172,6 +172,7 @@
 }
 
 
+<!--JAVASCRIPT-->
 
 <script>
     //Variabler för att lagra användaren och profilen som visas
@@ -190,10 +191,33 @@
 
     //En check som kollar ifall den som är inloggad är vän med profilen man besöker
     var Friends = @Html.Raw(Json.Serialize(Model.Friends));
-    console.log(Friends)
+
+
+
+
+    //Skript för att lagra vem som besöker profilen
+    //Körs varje gång en användare besöker en profil
+    //Skickas som Json-objekt till LatestVisitorsController
+    window.onload = function registerVisitor() {
+        var visit = { ProfileVisited: profil.id, VisitedBy: inloggad.id }
+        $.ajax({
+            url: "/api/LatestVisitors/AddLatestVisitor",
+            type: 'POST',
+            data: JSON.stringify(visit),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+        })
+    }
+
+    
+
+
+
+
+    //Skript som kollar ifall användaren är vän med den besökta profilen
+    //Kollar ifall id på den inloggade och profilen finns i någon av kolumnerna i Friendstabellen
+    //Då det skiljer sig vilken kolumn i databasen användarna hamnar i beroende på ifall de skickade eller accepterade
     for (var i = 0; i < Friends.length; i++) {
-        //Två if-statements som kollar ifall id på den inloggade och profilen finns i någon av kolumnerna i Friendstabellen
-        //Då det skiljer sig vilken kolumn i databasen användarna hamnar i beroende på ifall de skickade eller accepterade
 
         //Om en match hittas så sätts isFriends till true
         if (profil.id == Friends[i].friend_1.id && inloggad.id == Friends[i].friend_2.id) {
@@ -236,6 +260,10 @@
             }
         }
     }
+
+
+
+
     //Event för att skicka meddelande genom Json-objekt
     btnMessage.addEventListener("click", PostMessage);
 
@@ -277,6 +305,9 @@
     }
 
 
+
+
+    //Skript för lägga till vän
     //Check innan funktion SendFriendRequest() körs
     if (btnAddFriend.disabled == false && btnAddFriend.id == "AddFriendBtn") {
 
@@ -308,7 +339,12 @@
         btnAddFriend.addEventListener("click", confirmFriendRequest)
     }
 
+
+
+
     //Funktion för att bekräfta förfrågan
+    //En rad läggs till i Friends-tabellen och
+    //en rad tas bort i FriendRequest-tabellen
     function confirmFriendRequest() {
         var friends = { Friend_1: inloggad.id, Friend_2: profil.id }
         $.ajax({

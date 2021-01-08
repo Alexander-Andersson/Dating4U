@@ -28,6 +28,7 @@ namespace Dating4U.Controllers
             uv.Friends = await _context.Friends.ToListAsync();
             uv.Messages = await _context.UserWall.ToListAsync();
             uv.FriendRequests = await _context.FriendRequests.ToListAsync();
+            uv.Visitors = await _context.LatestVisitors.ToListAsync();
             return View(uv);
         }
 
