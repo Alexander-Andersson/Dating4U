@@ -131,9 +131,21 @@
                 <h4>Om mig</h4>
                 <p class="ProfilText">@_user.Description</p>
             </div>
+
             <div class="Friends">
                 <h4>Vänner</h4>
-                <ul>
+                <!--Kategorisera vänner utefter hobby-->
+                <label>Kategorisera efter hobby:</label>
+                <select name="Hobbies" id="hobbies">
+                    <!--CHECKA SÅ NAMN STÄMMER ÖVERENS MED MODELLEN-->
+                    <option value="Alla">Alla</option>
+                    <option value="Fågelskådning">Fågelskådning</option>
+                    <option value="Surfing">Surfing</option>
+                    <option value="RitaPaint">Rita i paint</option>
+                </select>
+                <input type="submit" id="KategoriseraBtn" value="Kategorisera" />
+
+                <ul id="friendList">
                     <!--Fyll på vänlista-->
                     @foreach (var item in friendList)
                     {
@@ -155,20 +167,47 @@
             <!--Högra delen av sidan-->
         </div>
         <div class="Väggen">
-            <!--Skriv ut de som nyligen besökt sidan-->
+            <!--Skriv ut de 5 senaste besökarna-->
             <div id="senastBesokta">
                 <h6>
                     Användare som nyligen besökt din sida:
                 </h6>
                 <p>
-                    @foreach (var item in Model.Visitors)
-                    {
-                        @if (item.ProfileVisited.Id == _user.Id)
+                    @{
+                        //Lista med profiler som besökt användaren
+                        List<User> usersVisited = new List<User>();
+                        //Antal rader i Model.Visitors
+                        int numOfModelVisitors = Model.Visitors.Count;
+
+                        //Baklänges-loop för att fylla listan med de senaste besökarna
+                        //De senaste besökarna hamnar "högst upp" i listan
+                        for (int i = numOfModelVisitors - 1; i >= 0; i--)
                         {
-                            string visitedBy = item.VisitedBy.FirstName + " " + item.VisitedBy.LastName;
-                            <a href="/Users/Details/@item.VisitedBy.Id">@visitedBy &nbsp;</a>
+                            if (Model.Visitors[i].ProfileVisited.Id == _user.Id)
+                            {
+                                usersVisited.Add(Model.Visitors[i].VisitedBy);
+                            }
                         }
 
+                        //Om användaren har färre än 5 besökare
+                        //loopa endast genom storleken av listan
+                        if (usersVisited.Count < 5)
+                        {
+                            for (int i = 0; i < usersVisited.Count; i++)
+                            {
+                                string visitedBy = usersVisited[i].FirstName + " " + usersVisited[i].LastName;
+                                <a href="/Users/Details/@usersVisited[i].Id">@visitedBy &nbsp;</a>
+                            }
+                        }
+                        //Annars loopa genom fem användare
+                        else
+                        {
+                            for (int i = 0; i < 5; i++)
+                            {
+                                string visitedBy = usersVisited[i].FirstName + " " + usersVisited[i].LastName;
+                                <a href="/Users/Details/@usersVisited[i].Id">@visitedBy &nbsp;</a>
+                            }
+                        }
                     }
                 <p>
             </div>
@@ -253,6 +292,61 @@
     }
 </script>
 
+<script>
+    //Skript för att kategorisera vänlistan
+    var kategoriseraBtn = document.getElementById("KategoriseraBtn")
+    var kategoriseradLista = document.getElementById("friendList")
+    var friendList = @Html.Raw(Json.Serialize(friendList))
+
+    //Vid klick av Kategorisera-knapp, kör funktion för att kategorisera utefter hobby
+    kategoriseraBtn.addEventListener("click", kategoriseraFriends)
+
+    //Rensa vänlistan, sedan fyll med vänner som har den angivna hobbyn
+    function kategoriseraFriends() {
+
+        while (kategoriseradLista.hasChildNodes()) {
+            kategoriseradLista.removeChild(kategoriseradLista.firstChild);
+        }
+
+        var hobby = document.getElementById("hobbies").value
+
+        //Visa alla vänner, oavsett hobby
+        if (hobby == "Alla") {
+            for (var i = 0; i < friendList.length; i++) {
+                var aElement = document.createElement("A");
+                aElement.setAttribute("id", "friendLink");
+                aElement.setAttribute("href", "/Users/Details/" + friendList[i].Id);
+
+                var liElement = document.createElement("LI")
+                var friendName = document.createTextNode(friendList[i].firstName + " " + friendList[i].lastName)
+
+                liElement.appendChild(friendName)
+                aElement.appendChild(liElement)
+                kategoriseradLista.appendChild(aElement)
+                }
+            }
+
+            //Visa vänner med angivna hobbyn
+            if (hobby != "Alla") {
+                for (var i = 0; i < friendList.length; i++) {
+                    //if (friendList[i].hobby.equals(hobby)) {
+                    var aElement = document.createElement("A");
+                    aElement.setAttribute("id", "friendLink");
+                    aElement.setAttribute("href", "/Users/Details/" + friendList[i].Id);
+
+                    var liElement = document.createElement("LI")
+                    var friendName = document.createTextNode(friendList[i].firstName + " " + friendList[i].lastName)
+
+                    liElement.appendChild(friendName)
+                    aElement.appendChild(liElement)
+                    kategoriseradLista.appendChild(aElement)
+                    //}
+                }
+            }
+    }
+
+        
+</script>
 
 <style>
     #HeaderText {
@@ -320,6 +414,7 @@
     .Friends {
         border: solid;
         border-radius: 1em;
+        text-align: center;
     }
 
     ul {

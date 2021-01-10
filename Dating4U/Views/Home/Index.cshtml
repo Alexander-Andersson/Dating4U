@@ -110,9 +110,13 @@
 {
     for (int i = 0; i < 4; i++)
     {
-        <div class="profil">
-            <a href="/Users/Details/@Model.Users[i].Id "><img class="profilBild" src="@Model.Users[i].ProfilePicture" /></a>
-        </div>
+        //Profil får ej vara inaktiverad
+        if (Model.Users[i].IsInactivated == false)
+        {
+            <div class="profil">
+                <a href="/Users/Details/@Model.Users[i].Id "><img class="profilBild" src="@Model.Users[i].ProfilePicture" /></a>
+            </div>
+        }
     }
 }
 
@@ -120,9 +124,13 @@ else
 {
     for (int i = 0; i < Model.Users.Count; i++)
     {
-        <div class="profil">
-            <a href="/Users/Details/@Model.Users[i].Id"><img class="profilBild" src="@Model.Users[i].ProfilePicture" /></a>
-        </div>
+        //Profil får ej vara inaktiverad
+        if (Model.Users[i].IsInactivated == false)
+        {
+            <div class="profil">
+                <a href="/Users/Details/@Model.Users[i].Id"><img class="profilBild" src="@Model.Users[i].ProfilePicture" /></a>
+            </div>
+        }
     }
 }
 
