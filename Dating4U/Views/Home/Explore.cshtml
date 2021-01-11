@@ -91,7 +91,7 @@
         <h1>Ta chansen att hitta din nya señor eller señorita ;)</h1>
         <input type="text" placeholder="Sök på namn..." id="searchInput" />  &nbsp; <button id="searchBtn">Sök</button>
         &nbsp; &nbsp; &nbsp; &nbsp;<input type="submit" value="Rensa sök" onclick="location.href = '/Home/Explore';"/>
-        <input type="button"  value="Hitta passande partner" id="HittaPassandePartner" />
+        <input type="button"  value="Hitta passande partner" id="HittaPassandePartnerBtn" />
     </div>
 
     <!--Div och loop för att visa alla nuvarande profiler-->
@@ -105,7 +105,7 @@
         {
             //SKA INTE LÄGGAS TILL OM PROFILEN ÄR INACTIVE. lägg in i if
             //Lägger till Usern i searchable listan om Userns IsNotSearchable property är false
-            if (listUser[i].IsNotSearchable == false)
+            if (listUser[i].IsNotSearchable == false && listUser[i].Equals(_user.Id))
             {
                 searchableUsers.Add(listUser[i]);
             }
@@ -161,7 +161,7 @@
             //    antalProfiler++
             //    i++
             //}
-            
+
             var element = document.getElementById("storDiv");
             var divArray = [];
             //index för divArray
@@ -199,9 +199,21 @@
             const button = document.getElementById("searchBtn");
             button.disabled = true;
         }
-        HittaPassandePartner.addEventListener("click", HittaPassandePartner)
+        var inloggad = @Html.Raw(Json.Serialize(_user));
+        HittaPassandePartnerBtn.addEventListener("click", HittaPassandePartner)
         function HittaPassandePartner() {
+            var HobbyArray = [];
+            h = 0;
+            var HobbyInloggad = inloggad.hobby;
             for (var i = 0; i < antalProfiler; i++) {
+                var hobby = searchableUsers[1].hobby;
+
+                if(HobbyInloggad === hobby)
+                   {
+                    var profile = document.getElementById("profil " + searchableUsers[i].id)
+                    HobbyArray[h] = profile;
+                    h++;
+                }
 
 
             }
