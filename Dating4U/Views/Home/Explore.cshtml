@@ -91,7 +91,7 @@
         <h1>Ta chansen att hitta din nya señor eller señorita ;)</h1>
         <input type="text" placeholder="Sök på namn..." id="searchInput" />  &nbsp; <button id="searchBtn">Sök</button>
         &nbsp; &nbsp; &nbsp; &nbsp;<input type="submit" value="Rensa sök" onclick="location.href = '/Home/Explore';"/>
-        <input type="button"  value="Hitta passande partner" id="HittaPassandePartnerBtn" />
+        <button type="button" id="HittaPassandePartnerBtn">Hitta passande partner</button>
     </div>
 
     <!--Div och loop för att visa alla nuvarande profiler-->
@@ -105,7 +105,7 @@
         {
             //SKA INTE LÄGGAS TILL OM PROFILEN ÄR INACTIVE. lägg in i if
             //Lägger till Usern i searchable listan om Userns IsNotSearchable property är false
-            if (listUser[i].IsNotSearchable == false && listUser[i].Equals(_user.Id))
+            if (listUser[i].IsNotSearchable == false && !(listUser[i].Id.Equals(_user.Id)))
             {
                 searchableUsers.Add(listUser[i]);
             }
@@ -198,29 +198,40 @@
             const button = document.getElementById("searchBtn");
             button.disabled = true;
         }
-        var inloggad = @Html.Raw(Json.Serialize(_user));
-        HittaPassandePartnerBtn.addEventListener("click", HittaPassandePartner)
-        function HittaPassandePartner() {
-            var HobbyArray = [];
-            h = 0;
-            var HobbyInloggad = inloggad.hobby;
-            for (var i = 0; i < antalProfiler; i++) {
-                var hobby = searchableUsers[1].hobby;
-
-                if(HobbyInloggad === hobby)
-                   {
-                    var profile = document.getElementById("profil " + searchableUsers[i].id)
-                    HobbyArray[h] = profile;
-                    h++;
-                }
-
-
-            }
-
-
-        }
-
     }
+        var inloggad = @Html.Raw(Json.Serialize(_user));
+        var PassandePartnerBtn = document.getElementById('HittaPassandePartnerBtn');
+        PassandePartnerBtn.addEventListener("click", HittaPassandePartner)
+    function HittaPassandePartner() {
+        console.log("hej");
+        var HobbyArray = [];
+        var h = 0;
+        var HobbyInloggad = inloggad.hobby;
+        for (var i = 0; i < searchableUsers.length; i++) {
+            var hobby = searchableUsers[i].hobby;
+            console.log(HobbyInloggad)
+            console.log(hobby)
+            if (HobbyInloggad === hobby) {
+                console.log("true");
+                var profile = document.getElementById("profil " + searchableUsers[i].id)
+                console.log(profile);
+                HobbyArray[h] = profile;
+                h++;
+            }
+            else {
+                console.log("false");
+            }
+        }
+        //rensa alla profiler
+        $('.profil').remove();
+        var y = 0;
+        for (var i = 0; i < HobbyArray.length; i++) {
+             var profileSearched = HobbyArray[y];
+            document.getElementById("storDiv").appendChild(profileSearched);
+            y++;
+            
+        }
+}
 </script>
 
 <style>
