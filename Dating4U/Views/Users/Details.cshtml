@@ -355,6 +355,12 @@
     }
 
     //Funktion för att kolla om 2 användare passar bra ihop
+    //Kontrollerar vilken hobby den som är inloggad har och kollar av
+    //på den profil besökaren befinner sig på. Om båda användarna har samma hobby(att de matchar) kommer
+    //det skrivas ut "Ni passar bra ihop! Kanske en dejt?" om användarna inte har samma hobby
+    //(att dom inte matchar) kommer det skrivas ut "Era intressen matchar inte"
+
+    //Sätter en eventlistener på knappen PassarViIhopBtn och sätter på funktionen PassarViIhop
 
    PassarViIhopBtn.addEventListener("click", PassarViIhop)
 

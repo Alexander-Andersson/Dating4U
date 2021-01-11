@@ -52,18 +52,20 @@
                 <input asp-for="ProfilePicture" class="form-control" required />
                 <span asp-validation-for="ProfilePicture" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label>Vill du inte vara sökbar?</label>
-                <p style="font-size:small">Klicka i checkrutan ifall andra användare inte ska kunna hitta dig genom vår sökfunktion.<br />Användare kommer fortfarande kunna hitta din profilsida i Utforska men de kan inte söka efter dig.</p>
-                <input asp-for="IsNotSearchable" class="form-control" />
-                <span asp-validation-for="IsNotSearchable" class="text-danger"></span>
-            </div>
             <div>
                 <label>Vad skulle du göra på första dejten?</label>
                 Fågelskådning:  <input asp-for="Hobby" type="radio" class="form-control" name="Hobby" id="RadioBox" value="Fågelskådning" checked>
                 Surfing: <input asp-for="Hobby" type="radio" class="form-control" name="Hobby" id="RadioBox" value="Surfing">
                 Rita bilder i paint: <input asp-for="Hobby" type="radio" class="form-control" name="Hobby" id="RadioBox" value="Rita bilder i paint">
                 <span asp-validation-for="Hobby" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Vill du inte vara sökbar?</label>
+                <p style="font-size:small">Klicka i checkrutan ifall andra användare inte ska kunna hitta dig genom vår sökfunktion.<br />Användare kommer fortfarande kunna hitta din profilsida i Utforska men de kan inte söka efter dig.</p>
+            </div>
+            <div>
+                <input asp-for="IsNotSearchable" class="form-control" id="checkbox" />
+                <span asp-validation-for="IsNotSearchable" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -90,6 +92,12 @@
 
     body {
         background-color: white;
+    }
+    #checkBox {
+        border: 0px;
+        width: 10%;
+        height: 1.5em;
+        padding: 0;
     }
 </style>
 

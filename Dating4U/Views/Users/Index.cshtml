@@ -74,15 +74,18 @@
 @*Loopar friendList listan och mappar om users till xmlfriend objekt, xmlFriend läggs sedan in i xmlFriendList*@
 @foreach (var item in friendList)
 {
-    XmlFriend xmlFriend = new XmlFriend();
-    xmlFriend.FirstName = item.FirstName;
-    xmlFriend.LastName = item.LastName;
-    xmlFriend.Age = item.Age;
-    xmlFriend.Gender = item.Gender;
-    xmlFriend.Description = item.Description;
-    xmlFriend.Hobby = item.Hobby;
-    xmlFriend.ProfilePicture = item.ProfilePicture;
-    xmlFriendList.Add(xmlFriend);
+    if(item.IsInactivated != true)
+    {
+        XmlFriend xmlFriend = new XmlFriend();
+        xmlFriend.FirstName = item.FirstName;
+        xmlFriend.LastName = item.LastName;
+        xmlFriend.Age = item.Age;
+        xmlFriend.Gender = item.Gender;
+        xmlFriend.Description = item.Description;
+        xmlFriend.Hobby = item.Hobby;
+        xmlFriend.ProfilePicture = item.ProfilePicture;
+        xmlFriendList.Add(xmlFriend);
+    }
 }
 
 
@@ -255,8 +258,8 @@
             <textarea id="txtAreaMsg" type="text" rows="5" cols="60" name="description">
             </textarea>
             <input type="button" value="Skicka Meddelande" id="MessageBtn" />
-            
-            <h5>@_user.FirstName vägg</h5>
+            @{string namnVägg = @_user.FirstName + " " + @_user.LastName + "s";}
+            <h5>@namnVägg vägg</h5>
             <div id="TheWall">
 
                 @{//Loop för att fylla i alla meddelanden
@@ -308,6 +311,7 @@
         //Checka ifall tom ruta
         if (textAreaValue != "")
         {
+            //Objektet som skickas med inhållande den som skickar meddelandet, id på den som tar emot det och vad som skrevs.
             var message = { Sender: inloggad.id, Receiver: inloggad.id, Message: textAreaValue }
             $.ajax({
                 url: "/api/UserWalls/PostMessage",
@@ -338,14 +342,18 @@
             alert("Rutan får inte vara tom!")
     }
 
+    //För att ta bort ett meddelande
     function removeMessage(id) {
+        //Check ifall man vill ta bort meddelandet
         if (confirm('Är du säker på att du vill ta bort meddelandet?')) {
+            //Kallar på UserWalls delete funktion och använder parametern i funktionen för att ta bort rätt meddelande ur databasen
             $.ajax({
                 url: "/api/UserWalls/" + id,
                 type: 'DELETE',
                 contentType: "application/json; charset=utf-8",
                 success: alert("Meddelandet har tagits bort!")
             })
+            //Tar bort meddelandet från väggen
             var element = document.getElementById('TheWall');
             var elementToBeRemoved = document.getElementById('msgDiv ' + id);
             element.removeChild(elementToBeRemoved);
@@ -354,8 +362,10 @@
             return;
         }
     }
+
+    //Funktion som använder ajax för att skicka ett json-objekt via ajax till API-controllern XmlController
+    //innehållande en profil och ett filnamn som ska sparas ner till en XML-fil.
     function ExportProfile() {
-        console.log("Hej");
         var profile = @Html.Raw(Json.Serialize(xmlProfile));
         var fileName = @Html.Raw(Json.Serialize(fileName));
         var jsonProfile = { Profile: profile, FileName: fileName }

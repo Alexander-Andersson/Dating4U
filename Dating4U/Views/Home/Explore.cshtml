@@ -129,39 +129,21 @@ else
         //Checkas också ifall den som är inloggad inte visas, profiler som inte blivit setup visas inte heller
         if (listUser[i].IsInactivated == false && !(listUser[i].Id == _user.Id) && listUser[i].FirstName != null)
         {
-            Console.WriteLine(listUser[i].IsNotSearchable);
             //user objektet läggs till i searchableUsers listan
             if (listUser[i].IsNotSearchable == false)
             {
                 searchableUsers.Add(listUser[i]);
-                Console.WriteLine(listUser[i].FirstName + listUser[i].LastName + " lades till");
             }
 
-            //Route till register om ej inloggad
-            if (User.Identity.Name == null)
-            {
+            //Skriv ut profilen
+            string name = listUser[i].FirstName + " " + listUser[i].LastName;
 
-                string name = listUser[i].FirstName + " " + listUser[i].LastName;
-
-                <div class="profil" id="profil @listUser[i].Id">
-                    <a href="/Identity/Account/Register" id="profileLink @listUser[i].Id" class="profileText">
-                        <img class="profilBild" src="@listUser[i].ProfilePicture" id="profilePicture @i" />
-                        <p id="textUsernameExplore @i" class="profileText">@name</p>
-                    </a>
-                </div>
-            }
-            //Route till Details
-            else
-            {
-                string name = listUser[i].FirstName + " " + listUser[i].LastName;
-
-                <div class="profil" id="profil @listUser[i].Id">
-                    <a href="/Users/Details/@listUser[i].Id" id="profileLink @listUser[i].Id" class="profileText">
-                        <img class="profilBild" src="@listUser[i].ProfilePicture" id="profilePicture @i" />
-                        <p id="textUsernameExplore @i" class="profileText">@name</p>
-                    </a>
-                </div>
-            }
+            <div class="profil" id="profil @listUser[i].Id">
+                <a href="/Users/Details/@listUser[i].Id" id="profileLink @listUser[i].Id" class="profileText">
+                    <img class="profilBild" src="@listUser[i].ProfilePicture" id="profilePicture @i" />
+                    <p id="textUsernameExplore @i" class="profileText">@name</p>
+                </a>
+            </div>
         }
     }
     </div>
@@ -200,15 +182,6 @@ else
         //Lagra den profilen i variabler, rensa bland alla profiler på sidan
         //och lägg sedan till den hittade profilen
         if (inputKorrekt) {
-            console.log("1")
-            ////Först ska antalet profiler räknas
-            //var antalProfiler = 0;
-            //var i = 0;
-            //while (document.getElementById("profil " + i) != null) {
-            //    antalProfiler++
-            //    i++
-            //}
-
             var element = document.getElementById("storDiv");
             var divArray = [];
             //index för divArray
@@ -217,7 +190,7 @@ else
             //Sedan loopas namnet på alla profiler genom.
             //De matchande profilerna läggs till i divArray
             for (var i = 0; i < searchableUsers.length; i++) {
-                var profileName = searchableUsers[i].firstName + " " + searchableUsers[i].lastName//document.getElementById("textUsernameExplore " + i).innerText
+                var profileName = searchableUsers[i].firstName + " " + searchableUsers[i].lastName
                 var profileNameLower = profileName.toLowerCase();
                 if (profileNameLower.includes(inputNamnLower)) {
                     var profile = document.getElementById("profil " + searchableUsers[i].id)
@@ -236,9 +209,6 @@ else
                 document.getElementById("storDiv").appendChild(profileSearched);
                 x++;
             }
-            ////kod för att skriva in profilen
-            //var element = document.getelementbyid("stordiv");
-            //element.appendchild(profile);
 
             //Inaktivera sök-knappen efter en sökning
             //Klicka på rensa sök för att återställa
@@ -249,35 +219,49 @@ else
         var inloggad = @Html.Raw(Json.Serialize(_user));
         var PassandePartnerBtn = document.getElementById('HittaPassandePartnerBtn');
         PassandePartnerBtn.addEventListener("click", HittaPassandePartner)
+    //funktionen för hitta passande partner som plockar fram de profiler från searchableUsers som har samma hobby
+    //som den som är inloggad. De profiler som har samma hobby som den som är inloggad kommer lagras i en array
+    //som heter HobbyArray.
 
-    function HittaPassandePartner() {
-        console.log("hej");
+    function HittaPassandePartner() {  
         var HobbyArray = [];
         var h = 0;
         var HobbyInloggad = inloggad.hobby;
         for (var i = 0; i < searchableUsers.length; i++) {
             var hobby = searchableUsers[i].hobby;
             if (HobbyInloggad === hobby) {
-                var profile = document.getElementById("profil " + searchableUsers[i].id)
-                console.log(profile);
+                var profile = document.getElementById("profil " + searchableUsers[i].id) 
                 HobbyArray[h] = profile;
                 h++;
             }
         }
-        //rensa alla profiler
+        //rensa alla profiler från utforska
+        //Om ingen har samma hobby som den som är inloggad skrivs "Ingen verkar dela din hobby..." ut!
+       
         $('.profil').remove();
-        var titelPassandePartner = document.createElement('h3');
-        titelPassandePartner.append("Dessa singlar vill också gå på en " + HobbyInloggad + " dejt!");
-        titelPassandePartner.setAttribute("style", "text-align: center");
-        document.getElementById('storDiv').appendChild(titelPassandePartner);
-        var y = 0;
-        for (var i = 0; i < HobbyArray.length; i++) {
-             var profileSearched = HobbyArray[y];
-            document.getElementById("storDiv").appendChild(profileSearched);
-            y++;
-            
+        if (HobbyArray.length == 0) {
+            var titelNoMatch = document.createElement('h3');
+            titelNoMatch.append("Ingen verkar dela din hobby...");
+            titelNoMatch.setAttribute("style", "text-align: center");
+            document.getElementById('storDiv').appendChild(titelNoMatch);
         }
-}
+        //Else körs när det finns andra användare som har samma hobby som inloggad och då skrivs
+        //"Dessa singlar vill också gå på en" + den hobby som inloggad har.
+        //De profiler som lagras i HobbyArray kommer appenda till stordiven på utforska sidan.
+
+        else {
+            var titelPassandePartner = document.createElement('h3');
+            titelPassandePartner.append("Dessa singlar vill också gå på en " + HobbyInloggad + "-dejt!");
+            titelPassandePartner.setAttribute("style", "text-align: center");
+            document.getElementById('storDiv').appendChild(titelPassandePartner);
+            var y = 0;
+            for (var i = 0; i < HobbyArray.length; i++) {
+                var profileSearched = HobbyArray[y];
+                document.getElementById("storDiv").appendChild(profileSearched);
+                y++;
+            }
+        }
+    }
 </script>
 
 <style>

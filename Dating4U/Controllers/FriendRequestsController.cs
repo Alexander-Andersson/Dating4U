@@ -77,15 +77,15 @@ namespace Dating4U.Controllers
         // POST: api/FriendRequests
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Route("SendFriendRequest")]
+        //Metoden tar emot ett json-objekt, objektet innehåller två int(Id för User) som används för att kalla metoden CreateFriendRequestObject
         public async Task ConvertJson([FromBody] FriendRequestJson friendRequestJson)
         {
             int sender = friendRequestJson.Sender;
             int receiver = friendRequestJson.Receiver;
-            Console.WriteLine(sender);
-            Console.WriteLine(receiver);
             await CreateFriendRequestObject(sender, receiver);
         }
 
+        //Skapar upp två users med hjälp av parametrarna(Id)
         public async Task CreateFriendRequestObject(int Sender, int Receiver)
         {
             using (_context)
@@ -107,17 +107,17 @@ namespace Dating4U.Controllers
                         receiver = item;
                     }
                 }
-
+                //Skapar ett nytt FriendRequest objekt med hjälp av sender och reciever och kallar PostFriendRequest.
                 FriendRequest friendRequest = new FriendRequest();
                 friendRequest.Sender = sender;
                 friendRequest.Receiver = receiver;
-
-                Console.WriteLine(friendRequest);
+                
                 await PostFriendRequest(friendRequest);
             }
         }
 
         [HttpPost]
+        //Lägger till en Friend request i databasen.
         public async Task<ActionResult<FriendRequest>> PostFriendRequest(FriendRequest friendRequest)
         {
             _context.FriendRequests.Add(friendRequest);
