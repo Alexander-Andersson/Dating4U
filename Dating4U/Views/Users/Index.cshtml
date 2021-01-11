@@ -62,12 +62,18 @@
 {
     if (item.Friend_1.Id == _user.Id)
     {
-        friendList.Add(item.Friend_2);
+        if(item.Friend_2.IsInactivated == false)
+        {
+            friendList.Add(item.Friend_2);
+        }
     }
 
     if (item.Friend_2.Id == _user.Id)
     {
-        friendList.Add(item.Friend_1);
+        if (item.Friend_1.IsInactivated == false)
+        {
+            friendList.Add(item.Friend_1);
+        }
     }
 }
 
@@ -405,7 +411,7 @@
             for (var i = 0; i < friendList.length; i++) {
                 var aElement = document.createElement("A");
                 aElement.setAttribute("id", "friendLink");
-                aElement.setAttribute("href", "/Users/Details/" + friendList[i].Id);
+                aElement.setAttribute("href", "/Users/Details/" + friendList[i].id);
 
                 var liElement = document.createElement("LI")
                 var friendName = document.createTextNode(friendList[i].firstName + " " + friendList[i].lastName)
@@ -422,7 +428,7 @@
                     if (friendList[i].hobby == hobby) {
                     var aElement = document.createElement("A");
                     aElement.setAttribute("id", "friendLink");
-                    aElement.setAttribute("href", "/Users/Details/" + friendList[i].Id);
+                    aElement.setAttribute("href", "/Users/Details/" + friendList[i].id);
 
                     var liElement = document.createElement("LI")
                     var friendName = document.createTextNode(friendList[i].firstName + " " + friendList[i].lastName)
