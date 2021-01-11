@@ -207,22 +207,25 @@
         var inloggad = @Html.Raw(Json.Serialize(_user));
         var PassandePartnerBtn = document.getElementById('HittaPassandePartnerBtn');
         PassandePartnerBtn.addEventListener("click", HittaPassandePartner)
+    //funktionen för hitta passande partner som plockar fram de profiler från searchableUsers som har samma hobby
+    //som den som är inloggad. De profiler som har samma hobby som den som är inloggad kommer lagras i en array
+    //som heter HobbyArray.
 
-    function HittaPassandePartner() {
-        console.log("hej");
+    function HittaPassandePartner() {  
         var HobbyArray = [];
         var h = 0;
         var HobbyInloggad = inloggad.hobby;
         for (var i = 0; i < searchableUsers.length; i++) {
             var hobby = searchableUsers[i].hobby;
             if (HobbyInloggad === hobby) {
-                var profile = document.getElementById("profil " + searchableUsers[i].id)
-                console.log(profile);
+                var profile = document.getElementById("profil " + searchableUsers[i].id) 
                 HobbyArray[h] = profile;
                 h++;
             }
         }
-        //rensa alla profiler
+        //rensa alla profiler från utforska
+        //Om ingen har samma hobby som den som är inloggad skrivs "Ingen verkar dela din hobby..." ut!
+       
         $('.profil').remove();
         if (HobbyArray.length == 0) {
             var titelNoMatch = document.createElement('h3');
@@ -230,6 +233,10 @@
             titelNoMatch.setAttribute("style", "text-align: center");
             document.getElementById('storDiv').appendChild(titelNoMatch);
         }
+        //Else körs när det finns andra användare som har samma hobby som inloggad och då skrivs
+        //"Dessa singlar vill också gå på en" + den hobby som inloggad har.
+        //De profiler som lagras i HobbyArray kommer appenda till stordiven på utforska sidan.
+
         else {
             var titelPassandePartner = document.createElement('h3');
             titelPassandePartner.append("Dessa singlar vill också gå på en " + HobbyInloggad + "-dejt!");
