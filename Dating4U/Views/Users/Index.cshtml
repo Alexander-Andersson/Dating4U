@@ -31,8 +31,19 @@
     string age = _user.Age.ToString() + " år gammal";
     string editProfileUrl = "/Users/Edit/" + _user.Id;
     List<User> friendList = new List<User>();
-
     List<FriendRequest> friendRequests = new List<FriendRequest>();
+    
+    //Nytt XmlProfile obj och fyller dess properties
+    XmlProfile xmlProfile = new XmlProfile();
+    xmlProfile.FirstName = _user.FirstName;
+    xmlProfile.LastName = _user.LastName;
+    xmlProfile.Age = _user.Age;
+    xmlProfile.Gender = _user.Gender;
+    xmlProfile.Description = _user.Description;
+    xmlProfile.ProfilePicture = _user.ProfilePicture;
+    xmlProfile.Hobby = _user.Hobby;
+    string fileName = @"" + xmlProfile.FirstName + xmlProfile.LastName + ".xml";
+    List<XmlFriend> xmlFriendList = new List<XmlFriend>();
 }
 
 
@@ -59,7 +70,23 @@
     }
 }
 
+@*Loopar friendList listan och mappar om users till xmlfriend objekt, xmlFriend läggs sedan in i xmlFriendList*@
+@foreach (var item in friendList)
+{
+    XmlFriend xmlFriend = new XmlFriend();
+    xmlFriend.FirstName = item.FirstName;
+    xmlFriend.LastName = item.LastName;
+    xmlFriend.Age = item.Age;
+    xmlFriend.Gender = item.Gender;
+    xmlFriend.Description = item.Description;
+    xmlFriend.Hobby = item.Hobby;
+    xmlFriend.ProfilePicture = item.ProfilePicture;
+    xmlFriendList.Add(xmlFriend);
+}
 
+@{ 
+    xmlProfile.FriendList = xmlFriendList;
+}
 
 @if (!SignInManager.IsSignedIn(User))
 {
@@ -144,6 +171,8 @@
             <a href="@editProfileUrl">Redigera Profil</a>
             <br />
             <a href="/Identity/Account/Manage">Redigera Inloggningsuppgifter</a>
+            <br />
+            <button type="button" onclick=ExportProfile()>Spara profil som XML</button>
 
         </div>
         <div class="Väggen">
@@ -243,6 +272,37 @@
             return;
         }
     }
+    function ExportProfile() {
+        console.log("Hej");
+        var profile = @Html.Raw(Json.Serialize(xmlProfile));
+        var fileName = @Html.Raw(Json.Serialize(fileName));
+        var jsonProfile = { Profile: profile, FileName: fileName }
+        if (confirm("Vill du exportera din profil till XML?")) {
+            $.ajax({
+                url: "/api/Xml/ExportProfile",
+                type: 'POST',
+                data: JSON.stringify(jsonProfile),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: alert("Profil exporterad!")
+            })
+        }
+    }
+    //function ExportProfile(profile, fileName) {
+    //    console.log("yo");
+    //    console.log(profile);
+    //    console.log(fileName);
+    //    if (confirm("Vill du exportera din profil till XML?")) {
+    //        $.ajax({
+    //            url: "/api/XmlController",
+    //            type: 'POST',
+    //            data: JSON.stringify(profile, fileName),
+    //            contentType: "application/json; charset=utf-8",
+    //            dataType: "json",
+    //            success: alert("Profil exporterad!")
+    //        })
+    //    }
+    //}
 </script>
 
 
