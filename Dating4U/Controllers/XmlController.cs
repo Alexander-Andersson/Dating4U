@@ -15,6 +15,7 @@ namespace Dating4U.Controllers
     {
         [Route("ExportProfile")]
         [HttpPost]
+        //En metod som tar emot ett json-objekt
         public void ConvertJson([FromBody] XmlJson profile)
         {
             XmlProfile xmlProfile = profile.Profile;

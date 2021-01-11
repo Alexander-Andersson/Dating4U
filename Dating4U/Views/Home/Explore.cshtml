@@ -122,12 +122,10 @@
         //Checkas också ifall den som är inloggad inte visas, profiler som inte blivit setup visas inte heller
         if (listUser[i].IsInactivated == false && !(listUser[i].Id == _user.Id) && listUser[i].FirstName != null)
         {
-            Console.WriteLine(listUser[i].IsNotSearchable);
             //user objektet läggs till i searchableUsers listan
             if (listUser[i].IsNotSearchable == false)
             {
                 searchableUsers.Add(listUser[i]);
-                Console.WriteLine(listUser[i].FirstName + listUser[i].LastName + " lades till");
             }
             //Skriv ut profilen
             string name = listUser[i].FirstName + " " + listUser[i].LastName;
@@ -138,9 +136,6 @@
                     <p id="textUsernameExplore @i" class="profileText">@name</p>
                 </a>
             </div>
-        }
-        else {
-            Console.WriteLine(listUser[i].FirstName + listUser[i].LastName + " lades inte till");
         }
     }
 </div>
@@ -175,15 +170,6 @@
         //Lagra den profilen i variabler, rensa bland alla profiler på sidan
         //och lägg sedan till den hittade profilen
         if (inputKorrekt) {
-            console.log("1")
-            ////Först ska antalet profiler räknas
-            //var antalProfiler = 0;
-            //var i = 0;
-            //while (document.getElementById("profil " + i) != null) {
-            //    antalProfiler++
-            //    i++
-            //}
-
             var element = document.getElementById("storDiv");
             var divArray = [];
             //index för divArray
@@ -192,7 +178,7 @@
             //Sedan loopas namnet på alla profiler genom.
             //De matchande profilerna läggs till i divArray
             for (var i = 0; i < searchableUsers.length; i++) {
-                var profileName = searchableUsers[i].firstName + " " + searchableUsers[i].lastName//document.getElementById("textUsernameExplore " + i).innerText
+                var profileName = searchableUsers[i].firstName + " " + searchableUsers[i].lastName
                 var profileNameLower = profileName.toLowerCase();
                 if (profileNameLower.includes(inputNamnLower)) {
                     var profile = document.getElementById("profil " + searchableUsers[i].id)
@@ -211,9 +197,6 @@
                 document.getElementById("storDiv").appendChild(profileSearched);
                 x++;
             }
-            ////kod för att skriva in profilen
-            //var element = document.getelementbyid("stordiv");
-            //element.appendchild(profile);
 
             //Inaktivera sök-knappen efter en sökning
             //Klicka på rensa sök för att återställa
@@ -241,18 +224,25 @@
         }
         //rensa alla profiler
         $('.profil').remove();
-        var titelPassandePartner = document.createElement('h3');
-        titelPassandePartner.append("Dessa singlar vill också gå på en " + HobbyInloggad + " dejt!");
-        titelPassandePartner.setAttribute("style", "text-align: center");
-        document.getElementById('storDiv').appendChild(titelPassandePartner);
-        var y = 0;
-        for (var i = 0; i < HobbyArray.length; i++) {
-             var profileSearched = HobbyArray[y];
-            document.getElementById("storDiv").appendChild(profileSearched);
-            y++;
-            
+        if (HobbyArray.length == 0) {
+            var titelNoMatch = document.createElement('h3');
+            titelNoMatch.append("Ingen verkar dela din hobby...");
+            titelNoMatch.setAttribute("style", "text-align: center");
+            document.getElementById('storDiv').appendChild(titelNoMatch);
         }
-}
+        else {
+            var titelPassandePartner = document.createElement('h3');
+            titelPassandePartner.append("Dessa singlar vill också gå på en " + HobbyInloggad + "-dejt!");
+            titelPassandePartner.setAttribute("style", "text-align: center");
+            document.getElementById('storDiv').appendChild(titelPassandePartner);
+            var y = 0;
+            for (var i = 0; i < HobbyArray.length; i++) {
+                var profileSearched = HobbyArray[y];
+                document.getElementById("storDiv").appendChild(profileSearched);
+                y++;
+            }
+        }
+    }
 </script>
 
 <style>
