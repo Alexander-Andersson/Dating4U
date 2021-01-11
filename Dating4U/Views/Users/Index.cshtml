@@ -101,7 +101,7 @@
                     @foreach (var item in friendRequests)
                     {
                         string senderName = item.Sender.FirstName + " " + item.Sender.LastName;
-                        <a id="friendRequestSlider" href="Users/Details/@item.Sender.Id">@senderName &nbsp; &nbsp;</a>
+                        <a id="friendRequestSlider" href="/Users/Details/@item.Sender.Id">@senderName &nbsp; &nbsp;</a>
                     }
                 </p>
             </marquee>
@@ -164,7 +164,7 @@
             <br />
             <a href="/Identity/Account/Manage">Redigera Inloggningsuppgifter</a>
 
-            <!--Högra delen av sidan-->
+        <!--Högra delen av sidan-->
         </div>
         <div class="Väggen">
             <!--Skriv ut de 5 senaste besökarna-->
@@ -196,7 +196,7 @@
                             for (int i = 0; i < usersVisited.Count; i++)
                             {
                                 string visitedBy = usersVisited[i].FirstName + " " + usersVisited[i].LastName;
-                                <a href="/Users/Details/@usersVisited[i].Id">@visitedBy &nbsp;</a>
+                                <a id="visitedUsers" href="/Users/Details/@usersVisited[i].Id">@visitedBy &nbsp;</a>
                             }
                         }
                         //Annars loopa genom fem användare
@@ -205,7 +205,7 @@
                             for (int i = 0; i < 5; i++)
                             {
                                 string visitedBy = usersVisited[i].FirstName + " " + usersVisited[i].LastName;
-                                <a href="/Users/Details/@usersVisited[i].Id">@visitedBy &nbsp;</a>
+                                <a id="visitedUsers" href="/Users/Details/@usersVisited[i].Id">@visitedBy &nbsp;</a>
                             }
                         }
                     }
@@ -249,6 +249,8 @@
 }
 
 <script>
+    //Skript för väggmeddelanden
+
     var btnMessage = document.getElementById('MessageBtn');
     btnMessage.addEventListener("click", PostMessage);
 
@@ -384,6 +386,15 @@
         border: solid;
         border-width: .03em;
         text-align: center;
+    }
+
+    #visitedUsers {
+        color: black;
+        text-decoration: none;
+    }
+
+    #visitedUsers:hover {
+        color: red;
     }
 
     #TheWall {

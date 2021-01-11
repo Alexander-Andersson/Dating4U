@@ -69,7 +69,7 @@
     <div class="text-center">
         <h1>Du har inte fixat din profilsida ännu!</h1>
         <h2>Klicka här för att komma dit: </h2>
-        <a href="Users/Create">Redigera profil</a>
+        <a href="/Users/Create">Redigera profil</a>
     </div>
 
 }
@@ -82,7 +82,7 @@
         <h3>Missa inte din chans att få snacka med heta singlar ;)</h3>
         <br />
         <h6>Klicka här för att återaktivera ditt konto: </h6>
-        <a href="Users/Edit/@loggedInUser.Id">Redigera profil</a>
+        <a href="/Users/Edit/@loggedInUser.Id">Redigera profil</a>
     </div>
 
 }
@@ -103,7 +103,7 @@
                     @foreach (var item in friendRequests)
                     {
                         string senderName = item.Sender.FirstName + " " + item.Sender.LastName;
-                        <a id="friendRequestSlider" href="Users/Details/@item.Sender.Id">@senderName &nbsp; &nbsp;</a>
+                        <a id="friendRequestSlider" href="/Users/Details/@item.Sender.Id">@senderName &nbsp; &nbsp;</a>
                     }
                 </p>
             </marquee>

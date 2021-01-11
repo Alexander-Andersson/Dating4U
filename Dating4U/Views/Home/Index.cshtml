@@ -49,7 +49,7 @@
     <div class="text-center">
         <h1>Du har inte fixat din profilsida ännu!</h1>
         <h2>Klicka här för att komma dit: </h2>
-        <a href="Users/Create">Redigera profil</a>
+        <a href="/Users/Create">Redigera profil</a>
     </div>
 
 }
@@ -62,7 +62,7 @@
         <h3>Missa inte din chans att få snacka med heta singlar ;)</h3>
         <br />
         <h6>Klicka här för att återaktivera ditt konto: </h6>
-        <a href="Users/Edit/@_user.Id">Redigera profil</a>
+        <a href="/Users/Edit/@_user.Id">Redigera profil</a>
     </div>
 
 }
@@ -83,7 +83,7 @@
                     @foreach (var item in friendRequests)
                     {
                         string senderName = item.Sender.FirstName + " " + item.Sender.LastName;
-                        <a id="friendRequestSlider" href="Users/Details/@item.Sender.Id">@senderName &nbsp; &nbsp;</a>
+                        <a id="friendRequestSlider" href="/Users/Details/@item.Sender.Id">@senderName &nbsp; &nbsp;</a>
                     }
                 </p>
             </marquee>
@@ -102,10 +102,12 @@
 
     <div class="text-center">
         <p>Just nu finns inga heta singlar. Du är den första heta singeln!</p>
-        <a href="Identity/Account/Register"><p>Registrera dig gratis</p></a>
+        <a href="/Identity/Account/Register"><p>Registrera dig gratis</p></a>
     </div>
 }
 
+<!--Om det finns fler än 3 profiler, skriv ut 3 eller 4 profiler,
+    beroende på ifall användaren är inloggad-->
 @if (Model.Users.Count > 3)
 {
     for (int i = 0; i < 4; i++)
@@ -113,13 +115,32 @@
         //Profil får ej vara inaktiverad
         if (Model.Users[i].IsInactivated == false)
         {
-            <div class="profil">
-                <a href="/Users/Details/@Model.Users[i].Id "><img class="profilBild" src="@Model.Users[i].ProfilePicture" /></a>
-            </div>
+            //Om det är användarens egna profil, skriv ej ut
+            if (Model.Users[i].Id == _user.Id)
+            {
+                
+            }
+            else
+            {
+                //Ej visa profiler som inte har satt upp sin profil ännu
+                //Räcker endast med firstName, då alla egenskaper är obligatoriska vis set-up
+                if (Model.Users[i].FirstName == null)
+                {
+                    
+                }
+                else
+                {
+                    //Skriv ut profilen
+                    <div class="profil">
+                        <a href="/Users/Details/@Model.Users[i].Id "><img class="profilBild" src="@Model.Users[i].ProfilePicture" /></a>
+                    </div>
+                }
+            }
         }
     }
 }
 
+//Om det finns mindre än 3 profiler, skriv ut så många som finns
 else
 {
     for (int i = 0; i < Model.Users.Count; i++)
@@ -127,9 +148,28 @@ else
         //Profil får ej vara inaktiverad
         if (Model.Users[i].IsInactivated == false)
         {
-            <div class="profil">
-                <a href="/Users/Details/@Model.Users[i].Id"><img class="profilBild" src="@Model.Users[i].ProfilePicture" /></a>
-            </div>
+            //Om det är användarens egna profil, skriv ej ut
+            if (Model.Users[i].Id == _user.Id)
+            {
+
+            }
+            else
+            {
+                //Ej visa profiler som inte har satt upp sin profil ännu
+                //Räcker endast med firstName, då alla egenskaper är obligatoriska vis set-up
+                if (Model.Users[i].FirstName == null)
+                {
+
+                }
+                else
+                {
+                    //Skriv ut profilen
+                    <div class="profil">
+                        <a href="/Users/Details/@Model.Users[i].Id"><img class="profilBild" src="@Model.Users[i].ProfilePicture" /></a>
+                    </div>
+                }
+            }
+
         }
     }
 }
@@ -175,7 +215,9 @@ else
         }
 
     #vänförfrågan {
-        background-image: linear-gradient(to left, violet, indigo, blue, green, orange, red, violet, indigo, blue, green, orange, red, violet, indigo, blue, green, orange, red, violet, indigo, blue, green, orange, red);
+        background-image: linear-gradient(to left, violet, indigo, blue,
+        green, orange, red, violet, indigo, blue, green, orange, red, violet,
+        indigo, blue, green, orange, red, violet, indigo, blue, green, orange, red);
         -webkit-background-clip: text;
         color: transparent;
     }

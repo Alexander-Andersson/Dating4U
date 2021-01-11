@@ -70,9 +70,8 @@
         <h3>Missa inte din chans att få snacka med heta singlar ;)</h3>
         <br />
         <h6>Klicka här för att återaktivera ditt konto: </h6>
-        <a href="Users/Edit/@_user.Id">Redigera profil</a>
+        <a href="/Users/Edit/@_user.Id">Redigera profil</a>
     </div>
-
 }
 
 <!--Om inloggad, profil registrerad och ej inaktiverad-->
@@ -92,7 +91,7 @@
                     @foreach (var item in friendRequests)
                     {
                         string senderName = item.Sender.FirstName + " " + item.Sender.LastName;
-                        <a id="friendRequestSlider" href="Users/Details/@item.Sender.Id">@senderName &nbsp;</a>
+                        <a id="friendRequestSlider" href="/Users/Details/@item.Sender.Id">@senderName &nbsp;</a>
                     }
                 </p>
             </marquee>
@@ -111,21 +110,37 @@
         Id, bildUrl och namn-->
     <!--Loop som ger inkrementerat id på alla taggar för varje profil.
         För att senare kunna användas-->
-
-
     @for (int i = 0; i < listUser.Count; i++)
     {
         //Check ifall kontot är inaktiverat
         if (listUser[i].IsInactivated == false)
         {
-            string name = listUser[i].FirstName + " " + listUser[i].LastName;
+            //Om det är användarens egna profil, skriv ej ut
+            if (Model.Users[i].Id == _user.Id)
+            {
 
-            <div class="profil" id="profil @i">
-                <a href="/Users/Details/@listUser[i].Id" id="profileLink @i" class="profileText">
-                    <img class="profilBild" src="@listUser[i].ProfilePicture" id="profilePicture @i" />
-                    <p id="textUsernameExplore @i" class="profileText">@name</p>
-                </a>
-            </div>
+            }
+            else
+            {
+                //Ej visa profiler som inte har satt upp sin profil ännu
+                //Räcker endast med firstName, då alla egenskaper är obligatoriska vis set-up
+                if (Model.Users[i].FirstName == null)
+                {
+
+                }
+                else
+                {
+                    //Skriv ut profilen
+                    string name = listUser[i].FirstName + " " + listUser[i].LastName;
+
+                    <div class="profil" id="profil @i">
+                        <a href="/Users/Details/@listUser[i].Id" id="profileLink @i" class="profileText">
+                            <img class="profilBild" src="@listUser[i].ProfilePicture" id="profilePicture @i" />
+                            <p id="textUsernameExplore @i" class="profileText">@name</p>
+                        </a>
+                    </div>
+                }
+            }
         }
 
     }
