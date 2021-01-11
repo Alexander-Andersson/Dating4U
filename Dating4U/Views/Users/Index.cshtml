@@ -172,7 +172,6 @@
                 <!--Kategorisera vänner utefter hobby-->
                 <label>Kategorisera efter hobby:</label>
                 <select name="Hobbies" id="hobbies">
-                    <!--CHECKA SÅ NAMN STÄMMER ÖVERENS MED MODELLEN-->
                     <option value="Alla">Alla</option>
                     <option value="Fågelskådning">Fågelskådning</option>
                     <option value="Surfing">Surfing</option>
@@ -251,8 +250,12 @@
             </div>
             <br />
 
-            <h4>Vägg</h4>
-            <textarea id="txtAreaMsg" type="text" rows="5" cols="60" name="description"></textarea><input type="button" value="Skicka Meddelande" id="MessageBtn" />
+            <h5>Skriv ett meddelande</h5>
+            <textarea id="txtAreaMsg" type="text" rows="5" cols="60" name="description">
+            </textarea>
+            <input type="button" value="Skicka Meddelande" id="MessageBtn" />
+
+            @*<h5>@{@_user.FirstName + "s"} vägg</h5>*@
             <div id="TheWall">
 
                 @{//Loop för att fylla i alla meddelanden
@@ -403,7 +406,7 @@
             //Visa vänner med angivna hobbyn
             if (hobby != "Alla") {
                 for (var i = 0; i < friendList.length; i++) {
-                    if (friendList[i].hobby.equals(hobby)) {
+                    if (friendList[i].hobby == hobby) {
                     var aElement = document.createElement("A");
                     aElement.setAttribute("id", "friendLink");
                     aElement.setAttribute("href", "/Users/Details/" + friendList[i].Id);
