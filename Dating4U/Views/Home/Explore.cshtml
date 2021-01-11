@@ -128,8 +128,8 @@
             //Skriv ut profilen
             string name = listUser[i].FirstName + " " + listUser[i].LastName;
 
-            <div class="profil" id="profil @i">
-                <a href="/Users/Details/@listUser[i].Id" id="profileLink @i" class="profileText">
+            <div class="profil" id="profil @listUser[i].Id">
+                <a href="/Users/Details/@listUser[i].Id" id="profileLink @listUser[i].Id" class="profileText">
                     <img class="profilBild" src="@listUser[i].ProfilePicture" id="profilePicture @i" />
                     <p id="textUsernameExplore @i" class="profileText">@name</p>
                 </a>
