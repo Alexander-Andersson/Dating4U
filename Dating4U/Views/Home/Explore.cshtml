@@ -87,12 +87,14 @@
         </div>
     }
 
-    <div class="text-center">
-        <h1>Ta chansen att hitta din nya señor eller señorita ;)</h1>
-        <input type="text" placeholder="Sök på namn..." id="searchInput" />  &nbsp; <button id="searchBtn">Sök</button>
-        &nbsp; &nbsp; &nbsp; &nbsp;<input type="submit" value="Rensa sök" onclick="location.href = '/Home/Explore';"/>
-        <button type="button" id="HittaPassandePartnerBtn">Hitta passande partner</button>
-    </div>
+<div class="text-center">
+    <h1>Ta chansen att hitta din nya señor eller señorita ;)</h1>
+    <input type="text" placeholder="Sök på namn..." id="searchInput" />  &nbsp; <button id="searchBtn">Sök</button>
+    &nbsp; &nbsp; &nbsp; &nbsp;<input type="submit" value="Rensa sök" onclick="location.href = '/Home/Explore';" />
+    &nbsp; &nbsp; &nbsp; &nbsp;<button type="button" id="HittaPassandePartnerBtn">Hitta passande partner</button>
+    <br />
+    <br />
+</div>
 
     <!--Div och loop för att visa alla nuvarande profiler-->
     <!--User-modellen och dess items används för att ta fram    
@@ -224,6 +226,10 @@
         }
         //rensa alla profiler
         $('.profil').remove();
+        var titelPassandePartner = document.createElement('h3');
+        titelPassandePartner.append("Dessa singlar vill också gå på en " + HobbyInloggad + " dejt!");
+        titelPassandePartner.setAttribute("style", "text-align: center");
+        document.getElementById('storDiv').appendChild(titelPassandePartner);
         var y = 0;
         for (var i = 0; i < HobbyArray.length; i++) {
              var profileSearched = HobbyArray[y];
