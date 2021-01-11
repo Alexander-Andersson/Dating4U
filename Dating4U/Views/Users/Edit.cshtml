@@ -54,13 +54,21 @@
                 <p style="font-size:small">Klicka i checkrutan ifall andra användare inte ska kunna hitta dig genom vår sökfunktion.<br />Användare kommer fortfarande kunna hitta din profilsida i Utforska men de kan inte söka efter dig.</p>
                 <input asp-for="IsNotSearchable" id="checkBox" class="form-control" />
                 <span asp-validation-for="IsNotSearchable" class="text-danger"></span>
-             </div>
+            </div>
             <div class="form-group">
                 <label>Vad skulle du göra på första dejten?</label>
                 Fågelskådning:  <input asp-for="Hobby" type="radio" class="form-control" name="Hobby" id="RadioBox" value="Fågelskådning" checked>
                 Surfning: <input asp-for="Hobby" type="radio" class="form-control" name="Hobby" id="RadioBox" value="Surfning">
                 Rita bilder i paint: <input asp-for="Hobby" type="radio" class="form-control" name="Hobby" id="RadioBox" value="Rita bilder i paint">
                 <span asp-validation-for="Hobby" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Inaktivera konto</label>
+                <label style="font-size: .8em;">Kryssa i rutan för att inaktivera ditt konto, 
+                avmarkera rutan för att återaktivera det.
+                Tryck sedan save för att spara ändringarna</label>
+                <input asp-for="IsInactivated" class="form-control">
+                <span asp-validation-for="IsInactivated" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -70,7 +78,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Tillbaka till profil</a>
+    <p><a asp-action="Index">Tillbaka till profil</a></p>
 </div>
 
 <style>

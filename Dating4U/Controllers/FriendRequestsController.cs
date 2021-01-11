@@ -123,7 +123,6 @@ namespace Dating4U.Controllers
             _context.FriendRequests.Add(friendRequest);
             await _context.SaveChangesAsync();
 
-            Console.WriteLine(friendRequest);
             return CreatedAtAction("GetFriendRequests", new { id = friendRequest.Id }, friendRequest);
         }
 

@@ -14,6 +14,8 @@
     //bajs
 }
 
+<!--Tilldela _user värden för den som är inloggad
+    och sätt ProfilRegistrerad till true-->
 @foreach (var item in Model.Users)
 {
     if (SignInManager.IsSignedIn(User) && User.Identity.Name.Equals(item.UserName))
@@ -25,7 +27,6 @@
 
 
 @{
-    
     bool HaveFriendRequest = false;
     string name = _user.FirstName + " " + _user.LastName;
     string age = _user.Age.ToString() + " år gammal";
@@ -47,7 +48,7 @@
 }
 
 
-
+<!--Leta efter friendrequests att visa-->
 @foreach (var item in Model.FriendRequests)
 {
     if (item.Receiver.Id == _user.Id)
@@ -57,6 +58,7 @@
     }
 }
 
+<!--Fyll på vänlistan-->
 @foreach (var item in Model.Friends)
 {
     if (item.Friend_1.Id == _user.Id)
@@ -84,10 +86,13 @@
     xmlFriendList.Add(xmlFriend);
 }
 
-@{ 
+
+@{
+    //xmlProfiles friendlist property får värdet av xmlFriendList
     xmlProfile.FriendList = xmlFriendList;
 }
 
+<!--Om ej inloggad-->
 @if (!SignInManager.IsSignedIn(User))
 {
     <div class="text-center">
@@ -100,6 +105,7 @@
     </div>
 }
 
+<!--Om inloggad men ej satt upp sin profil-->
 @if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == false)
 {
     <div class="text-center">
@@ -109,10 +115,12 @@
     </div>
 }
 
+<!--Om inloggad och satt up sin profil-->
 @if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == true)
 {
     if (HaveFriendRequest)
     {
+        <!--Visa vänförfrågningar-->
         <div style="overflow: hidden">
             <marquee>
                 <p id="vänförfrågan">
@@ -131,6 +139,8 @@
         </div>
     }
 
+    <!--Info om användaren-->
+    <!--Vänstra delen av sidan-->
     <h1 id="HeaderText">@name</h1>
 
     <div class="StoraDiven">
@@ -156,13 +166,30 @@
                 <h4>Min hobby</h4>
                 <p class="ProfilText">@_user.Hobby</p>
             </div>
+
             <div class="Friends">
                 <h4>Vänner</h4>
-                <ul>
+                <!--Kategorisera vänner utefter hobby-->
+                <label>Kategorisera efter hobby:</label>
+                <select name="Hobbies" id="hobbies">
+                    <!--CHECKA SÅ NAMN STÄMMER ÖVERENS MED MODELLEN-->
+                    <option value="Alla">Alla</option>
+                    <option value="Fågelskådning">Fågelskådning</option>
+                    <option value="Surfing">Surfing</option>
+                    <option value="Rita bilder i paint">Rita bilder i paint</option>
+                </select>
+                <input type="submit" id="KategoriseraBtn" value="Kategorisera" />
+
+                <ul id="friendList">
+                    <!--Fyll på vänlista-->
                     @foreach (var item in friendList)
                     {
-                        string friendName = item.FirstName + " " + item.LastName;
-                        <a id="friendLink" href="/Users/Details/@item.Id"><li>@friendName</li></a>
+                        //Om friend-kontot är inaktiverat ska det ej visas
+                        if (item.IsInactivated == false)
+                        {
+                            string friendName = item.FirstName + " " + item.LastName;
+                            <a id="friendLink" href="/Users/Details/@item.Id"><li>@friendName</li></a>
+                        }
                     }
                 </ul>
             </div>
@@ -175,8 +202,55 @@
             <br />
             <button type="button" onclick=ExportProfile()>Spara profil som XML</button>
 
+        <!--Högra delen av sidan-->
         </div>
         <div class="Väggen">
+            <!--Skriv ut de 5 senaste besökarna-->
+            <div id="senastBesokta">
+                <h6>
+                    Användare som nyligen besökt din sida:
+                </h6>
+                <p>
+                    @{
+                        //Lista med profiler som besökt användaren
+                        List<User> usersVisited = new List<User>();
+                        //Antal rader i Model.Visitors
+                        int numOfModelVisitors = Model.Visitors.Count;
+
+                        //Baklänges-loop för att fylla listan med de senaste besökarna
+                        //De senaste besökarna hamnar "högst upp" i listan
+                        for (int i = numOfModelVisitors - 1; i >= 0; i--)
+                        {
+                            if (Model.Visitors[i].ProfileVisited.Id == _user.Id)
+                            {
+                                usersVisited.Add(Model.Visitors[i].VisitedBy);
+                            }
+                        }
+
+                        //Om användaren har färre än 5 besökare
+                        //loopa endast genom storleken av listan
+                        if (usersVisited.Count < 5)
+                        {
+                            for (int i = 0; i < usersVisited.Count; i++)
+                            {
+                                string visitedBy = usersVisited[i].FirstName + " " + usersVisited[i].LastName;
+                                <a id="visitedUsers" href="/Users/Details/@usersVisited[i].Id">@visitedBy &nbsp;</a>
+                            }
+                        }
+                        //Annars loopa genom fem användare
+                        else
+                        {
+                            for (int i = 0; i < 5; i++)
+                            {
+                                string visitedBy = usersVisited[i].FirstName + " " + usersVisited[i].LastName;
+                                <a id="visitedUsers" href="/Users/Details/@usersVisited[i].Id">@visitedBy &nbsp;</a>
+                            }
+                        }
+                    }
+                <p>
+            </div>
+            <br />
+
             <h4>Vägg</h4>
             <textarea id="txtAreaMsg" type="text" rows="5" cols="60" name="description"></textarea><input type="button" value="Skicka Meddelande" id="MessageBtn" />
             <div id="TheWall">
@@ -210,12 +284,13 @@
 
             </div>
 
-
         </div>
     </div>
 }
 
 <script>
+    //Skript för väggmeddelanden
+
     var btnMessage = document.getElementById('MessageBtn');
     btnMessage.addEventListener("click", PostMessage);
 
@@ -289,23 +364,63 @@
             })
         }
     }
-    //function ExportProfile(profile, fileName) {
-    //    console.log("yo");
-    //    console.log(profile);
-    //    console.log(fileName);
-    //    if (confirm("Vill du exportera din profil till XML?")) {
-    //        $.ajax({
-    //            url: "/api/XmlController",
-    //            type: 'POST',
-    //            data: JSON.stringify(profile, fileName),
-    //            contentType: "application/json; charset=utf-8",
-    //            dataType: "json",
-    //            success: alert("Profil exporterad!")
-    //        })
-    //    }
-    //}
 </script>
 
+<script>
+    //Skript för att kategorisera vänlistan
+    var kategoriseraBtn = document.getElementById("KategoriseraBtn")
+    var kategoriseradLista = document.getElementById("friendList")
+    var friendList = @Html.Raw(Json.Serialize(friendList))
+
+    //Vid klick av Kategorisera-knapp, kör funktion för att kategorisera utefter hobby
+    kategoriseraBtn.addEventListener("click", kategoriseraFriends)
+
+    //Rensa vänlistan, sedan fyll med vänner som har den angivna hobbyn
+    function kategoriseraFriends() {
+
+        while (kategoriseradLista.hasChildNodes()) {
+            kategoriseradLista.removeChild(kategoriseradLista.firstChild);
+        }
+
+        var hobby = document.getElementById("hobbies").value
+
+        //Visa alla vänner, oavsett hobby
+        if (hobby == "Alla") {
+            for (var i = 0; i < friendList.length; i++) {
+                var aElement = document.createElement("A");
+                aElement.setAttribute("id", "friendLink");
+                aElement.setAttribute("href", "/Users/Details/" + friendList[i].Id);
+
+                var liElement = document.createElement("LI")
+                var friendName = document.createTextNode(friendList[i].firstName + " " + friendList[i].lastName)
+
+                liElement.appendChild(friendName)
+                aElement.appendChild(liElement)
+                kategoriseradLista.appendChild(aElement)
+                }
+            }
+
+            //Visa vänner med angivna hobbyn
+            if (hobby != "Alla") {
+                for (var i = 0; i < friendList.length; i++) {
+                    if (friendList[i].hobby.equals(hobby)) {
+                    var aElement = document.createElement("A");
+                    aElement.setAttribute("id", "friendLink");
+                    aElement.setAttribute("href", "/Users/Details/" + friendList[i].Id);
+
+                    var liElement = document.createElement("LI")
+                    var friendName = document.createTextNode(friendList[i].firstName + " " + friendList[i].lastName)
+
+                    liElement.appendChild(friendName)
+                    aElement.appendChild(liElement)
+                    kategoriseradLista.appendChild(aElement)
+                    }
+                }
+            }
+    }
+
+        
+</script>
 
 <style>
     #HeaderText {
@@ -338,6 +453,22 @@
         margin-left: 5%;
     }
 
+    #senastBesokta {
+        width: 70%;
+        border: solid;
+        border-width: .03em;
+        text-align: center;
+    }
+
+    #visitedUsers {
+        color: black;
+        text-decoration: none;
+    }
+
+    #visitedUsers:hover {
+        color: red;
+    }
+
     #TheWall {
         width: 100%;
         min-height: 20%;
@@ -366,6 +497,7 @@
     .Friends {
         border: solid;
         border-radius: 1em;
+        text-align: center;
     }
 
     ul {

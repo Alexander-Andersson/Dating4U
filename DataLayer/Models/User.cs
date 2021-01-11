@@ -19,5 +19,7 @@ namespace DataLayer.Models
         public string ProfilePicture { get; set; }
         public bool IsNotSearchable { get; set; }
         public string Hobby { get; set; }
+        public bool IsInactivated { get; set; }
+
     }
 }

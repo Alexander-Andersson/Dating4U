@@ -10,7 +10,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@{bool ProfilRegistrerad = false;
+@{
+    bool ProfilRegistrerad = false;
     List<User> listUser = new List<User>();
     listUser = Model.Users.ToList();
     bool HaveFriendRequest = false;
@@ -53,7 +54,7 @@
     </div>
 }
 
-<!--Om användaren är inloggad men ej har satt upp sin profil-->
+<!--Om användaren är inloggad men ej satt upp sin profil-->
 @if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == false)
 {
     <div class="text-center">
@@ -63,8 +64,20 @@
     </div>
 }
 
-<!--KOD SOM KÖRS NÄR ANVÄNDAREN ÄR INLOGGAD OCH HAR SATT UPP SIN PROFIL-->
-@if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == true)
+<!--Om kontot är inaktiverat-->
+@if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == true && _user.IsInactivated == true)
+{
+    <div class="text-center">
+        <h2>Ditt konto är inaktiverat!</h2>
+        <h3>Missa inte din chans att få snacka med heta singlar ;)</h3>
+        <br />
+        <h6>Klicka här för att återaktivera ditt konto: </h6>
+        <a href="/Users/Edit/@_user.Id">Redigera profil</a>
+    </div>
+}
+
+<!--Om inloggad, profil registrerad och ej inaktiverad-->
+@if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == true && _user.IsInactivated == false)
 {
     //Kod för visa vänförfrågnings-headern
     if (HaveFriendRequest)
@@ -80,12 +93,13 @@
                     @foreach (var item in friendRequests)
                     {
                         string senderName = item.Sender.FirstName + " " + item.Sender.LastName;
-                    <a id="friendRequestSlider" href="/Users/Details/@item.Sender.Id">@senderName &nbsp;</a>
+                        <a id="friendRequestSlider" href="/Users/Details/@item.Sender.Id">@senderName &nbsp;</a>
                     }
                 </p>
             </marquee>
         </div>
     }
+}
 
 <div class="text-center">
     <h1>Ta chansen att hitta din nya señor eller señorita ;)</h1>
@@ -97,33 +111,32 @@
 </div>
 
     <!--Div och loop för att visa alla nuvarande profiler-->
-    <!--User-modellen och dess items används för att ta fram    
+    <!--User-modellen och dess items används för att ta fram
         Id, bildUrl och namn-->
     <!--Loop som ger inkrementerat id på alla taggar för varje profil.
         För att senare kunna användas-->
-
-    <div id="storDiv">
-        @for (int i = 0; i < listUser.Count; i++)
+ <div id="storDiv">   
+    @for (int i = 0; i < listUser.Count; i++)
+    {
+        //Check ifall kontot är inaktiverat eller om man ska kunna bli sökt
+        //Checkas också ifall den som är inloggad inte visas, profiler som inte blivit setup visas inte heller
+        if (listUser[i].IsInactivated == false && !(listUser[i].Id == _user.Id) && listUser[i].FirstName != null
+            || listUser[i].IsNotSearchable == false && !(listUser[i].Id == _user.Id) && listUser[i].FirstName != null)
         {
-            //SKA INTE LÄGGAS TILL OM PROFILEN ÄR INACTIVE. lägg in i if
-            //Lägger till Usern i searchable listan om Userns IsNotSearchable property är false
-            if (listUser[i].IsNotSearchable == false && !(listUser[i].Id.Equals(_user.Id)))
-            {
-                searchableUsers.Add(listUser[i]);
-            }
+            //user objektet läggs till i searchableUsers listan
+            searchableUsers.Add(listUser[i]);
+            //Skriv ut profilen
             string name = listUser[i].FirstName + " " + listUser[i].LastName;
 
-            <div class="profil" id="profil @listUser[i].Id">
+            <div class="profil" id="profil @i">
                 <a href="/Users/Details/@listUser[i].Id" id="profileLink @i" class="profileText">
                     <img class="profilBild" src="@listUser[i].ProfilePicture" id="profilePicture @i" />
                     <p id="textUsernameExplore @i" class="profileText">@name</p>
                 </a>
             </div>
-
         }
-    </div>
-}
-
+    }
+</div>
 
 <script>
     //Serializerar searchableUsers
@@ -204,6 +217,7 @@
         var inloggad = @Html.Raw(Json.Serialize(_user));
         var PassandePartnerBtn = document.getElementById('HittaPassandePartnerBtn');
         PassandePartnerBtn.addEventListener("click", HittaPassandePartner)
+
     function HittaPassandePartner() {
         console.log("hej");
         var HobbyArray = [];
@@ -245,13 +259,14 @@
         margin-bottom: 2em;
     }
 
-    .profileText{
-        color:mediumvioletred;
-    }
-    .profileText:hover {
-        text-decoration-color: mediumvioletred;
+    .profileText {
         color: mediumvioletred;
     }
+
+        .profileText:hover {
+            text-decoration-color: mediumvioletred;
+            color: mediumvioletred;
+        }
 
     .profil {
         width: 20%;
@@ -279,17 +294,14 @@
         overflow: hidden;
     }
 
-    .marquee span {
+        .marquee span {
             display: inline-block;
             padding-left: 100%;
             animation: marquee 5s linear infinite;
         }
 
     #vänförfrågan {
-        background-image: linear-gradient(to left, violet, indigo, blue, green, 
-        orange, red, violet, indigo, blue, green, orange, red,
-        violet, indigo, blue, green,
-        orange, red, violet, indigo, blue, green, orange, red);
+        background-image: linear-gradient(to left, violet, indigo, blue, green, orange, red, violet, indigo, blue, green, orange, red, violet, indigo, blue, green, orange, red, violet, indigo, blue, green, orange, red);
         -webkit-background-clip: text;
         color: transparent;
     }
@@ -299,8 +311,8 @@
         color: blue;
     }
 
-    #friendRequestSlider:hover {
-        text-decoration: underline;
-        color: red;
-    }
+        #friendRequestSlider:hover {
+            text-decoration: underline;
+            color: red;
+        }
 </style>

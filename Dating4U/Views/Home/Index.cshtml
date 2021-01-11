@@ -5,11 +5,6 @@
 
 @model UserView
 
-<audio controls>
-    <source src="~/Starwars.mp3" type="audio/mpeg">
-</audio>
-
-
 @{
     ViewData["Title"] = "Home Page";
 
@@ -38,24 +33,42 @@
     }
 }
 
+<!--Om ej inloggad-->
 @if (!SignInManager.IsSignedIn(User))
 {
-<div class="text-center">
-    <h1 class="display-4">Vill du ta del av dessa läckra singlar?</h1>
-    <a href="/Identity/Account/Register"><p>Registrera dig gratis</p></a>
-</div>
+    <div class="text-center">
+        <h1 class="display-4">Vill du ta del av dessa läckra singlar?</h1>
+        <a href="/Identity/Account/Register"><p>Registrera dig</p></a>
+        <a href="/Identity/Account/Login"><p>Logga in</p></a>
+    </div>
 }
 
+<!--Om inloggad men ej registrerad profil-->
 @if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == false)
 {
     <div class="text-center">
         <h1>Du har inte fixat din profilsida ännu!</h1>
         <h2>Klicka här för att komma dit: </h2>
-        <a href="Users/Create">Redigera profil</a>
+        <a href="/Users/Create">Redigera profil</a>
     </div>
+
 }
 
-@if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == true)
+<!--Om kontot är inaktiverat-->
+@if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == true && _user.IsInactivated == true)
+{
+    <div class="text-center">
+        <h2>Ditt konto är inaktiverat!</h2>
+        <h3>Missa inte din chans att få snacka med heta singlar ;)</h3>
+        <br />
+        <h6>Klicka här för att återaktivera ditt konto: </h6>
+        <a href="/Users/Edit/@_user.Id">Redigera profil</a>
+    </div>
+
+}
+
+<!--Om inloggad, profil registrerad och ej inaktiverad-->
+@if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == true && _user.IsInactivated == false)
 {
     if (HaveFriendRequest)
     {
@@ -89,43 +102,78 @@
 
     <div class="text-center">
         <p>Just nu finns inga heta singlar. Du är den första heta singeln!</p>
-        <a href="Identity/Account/Register"><p>Registrera dig gratis</p></a>
+        <a href="/Identity/Account/Register"><p>Registrera dig gratis</p></a>
     </div>
 }
 
-
+<!--Om det finns fler än 3 profiler, skriv ut 3 eller 4 profiler,
+    beroende på ifall användaren är inloggad-->
 @if (Model.Users.Count > 3)
 {
     for (int i = 0; i < 4; i++)
     {
-        <div class="profil">
-        @if (!SignInManager.IsSignedIn(User))
+        //Profil får ej vara inaktiverad
+        if (Model.Users[i].IsInactivated == false)
         {
-            <a href="/Identity/Account/Register"><img class="profilBild" src="@Model.Users[i].ProfilePicture" /></a>
+            //Om det är användarens egna profil, skriv ej ut
+            if (Model.Users[i].Id == _user.Id)
+            {
+
+            }
+            else
+            {
+                //Ej visa profiler som inte har satt upp sin profil ännu
+                //Räcker endast med firstName, då alla egenskaper är obligatoriska vis set-up
+                if (Model.Users[i].FirstName == null)
+                {
+
+                }
+                else
+                {
+                    //Skriv ut profilen
+                    <div class="profil">
+                        <a href="/Users/Details/@Model.Users[i].Id "><img class="profilBild" src="@Model.Users[i].ProfilePicture" /></a>
+                    </div>
+                }
+            }
         }
-        else {
-            <a href="/Users/Details/@Model.Users[i].Id "><img class="profilBild" src="@Model.Users[i].ProfilePicture" /></a>
-        }  
-        </div>    
     }
 }
 
+//Om det finns mindre än 3 profiler, skriv ut så många som finns
 else
 {
     for (int i = 0; i < Model.Users.Count; i++)
     {
-    <div class="profil">
-        @if (!SignInManager.IsSignedIn(User))
+        //Profil får ej vara inaktiverad
+        if (Model.Users[i].IsInactivated == false)
         {
-            <a href="/Identity/Account/Register"><img class="profilBild" src="@Model.Users[i].ProfilePicture" /></a>
+            //Om det är användarens egna profil, skriv ej ut
+            if (Model.Users[i].Id == _user.Id)
+            {
+
+            }
+            else
+            {
+                //Ej visa profiler som inte har satt upp sin profil ännu
+                //Räcker endast med firstName, då alla egenskaper är obligatoriska vis set-up
+                if (Model.Users[i].FirstName == null)
+                {
+
+                }
+                else
+                {
+                    //Skriv ut profilen
+                    <div class="profil">
+                        <a href="/Users/Details/@Model.Users[i].Id"><img class="profilBild" src="@Model.Users[i].ProfilePicture" /></a>
+                    </div>
+                }
+            }
+
         }
-        else
-        {
-            <a href="/Users/Details/@Model.Users[i].Id "><img class="profilBild" src="@Model.Users[i].ProfilePicture" /></a>
-        }
-    </div>
     }
 }
+
 
 <style>
     .profil {
