@@ -141,7 +141,7 @@
 <script>
     //Serializerar searchableUsers
     var searchableUsers = @Html.Raw(Json.Serialize(searchableUsers));
-
+    console.log(searchableUsers);
     //Script för att ta fram profil av det angivna namnet i sökrutan
     //OnClick-event
     var searchKnapp = document.getElementById("searchBtn");
@@ -225,17 +225,11 @@
         var HobbyInloggad = inloggad.hobby;
         for (var i = 0; i < searchableUsers.length; i++) {
             var hobby = searchableUsers[i].hobby;
-            console.log(HobbyInloggad)
-            console.log(hobby)
             if (HobbyInloggad === hobby) {
-                console.log("true");
                 var profile = document.getElementById("profil " + searchableUsers[i].id)
                 console.log(profile);
                 HobbyArray[h] = profile;
                 h++;
-            }
-            else {
-                console.log("false");
             }
         }
         //rensa alla profiler
