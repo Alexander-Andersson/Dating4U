@@ -42,6 +42,8 @@
     }
 }
 
+<body>
+
 <!--Om användaren ej är inloggad-->
 @if (!SignInManager.IsSignedIn(User))
 {
@@ -54,7 +56,10 @@
     </div>
 }
 
-<!--Om användaren är inloggad men ej satt upp sin profil-->
+
+else
+{
+    <!--Om användaren är inloggad men ej satt upp sin profil-->
 @if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == false)
 {
     <div class="text-center">
@@ -75,6 +80,8 @@
         <a href="/Users/Edit/@_user.Id">Redigera profil</a>
     </div>
 }
+
+
 
 <!--Om inloggad, profil registrerad och ej inaktiverad-->
 @if (SignInManager.IsSignedIn(User) && ProfilRegistrerad == true && _user.IsInactivated == false)
@@ -115,7 +122,7 @@
         Id, bildUrl och namn-->
     <!--Loop som ger inkrementerat id på alla taggar för varje profil.
         För att senare kunna användas-->
- <div id="storDiv">   
+<div id="storDiv">
     @for (int i = 0; i < listUser.Count; i++)
     {
         //Check ifall kontot är inaktiverat eller om man ska kunna bli sökt
@@ -129,21 +136,39 @@
                 searchableUsers.Add(listUser[i]);
                 Console.WriteLine(listUser[i].FirstName + listUser[i].LastName + " lades till");
             }
-            //Skriv ut profilen
-            string name = listUser[i].FirstName + " " + listUser[i].LastName;
 
-            <div class="profil" id="profil @listUser[i].Id">
-                <a href="/Users/Details/@listUser[i].Id" id="profileLink @listUser[i].Id" class="profileText">
-                    <img class="profilBild" src="@listUser[i].ProfilePicture" id="profilePicture @i" />
-                    <p id="textUsernameExplore @i" class="profileText">@name</p>
-                </a>
-            </div>
-        }
-        else {
-            Console.WriteLine(listUser[i].FirstName + listUser[i].LastName + " lades inte till");
+            //Route till register om ej inloggad
+            if (User.Identity.Name == null)
+            {
+
+                string name = listUser[i].FirstName + " " + listUser[i].LastName;
+
+                <div class="profil" id="profil @listUser[i].Id">
+                    <a href="/Identity/Account/Register" id="profileLink @listUser[i].Id" class="profileText">
+                        <img class="profilBild" src="@listUser[i].ProfilePicture" id="profilePicture @i" />
+                        <p id="textUsernameExplore @i" class="profileText">@name</p>
+                    </a>
+                </div>
+            }
+            //Route till Details
+            else
+            {
+                string name = listUser[i].FirstName + " " + listUser[i].LastName;
+
+                <div class="profil" id="profil @listUser[i].Id">
+                    <a href="/Users/Details/@listUser[i].Id" id="profileLink @listUser[i].Id" class="profileText">
+                        <img class="profilBild" src="@listUser[i].ProfilePicture" id="profilePicture @i" />
+                        <p id="textUsernameExplore @i" class="profileText">@name</p>
+                    </a>
+                </div>
+            }
         }
     }
-</div>
+    </div>
+}
+
+
+</body>
 
 <script>
     //Serializerar searchableUsers
@@ -256,6 +281,10 @@
 </script>
 
 <style>
+    body {
+        background-color: white;
+    }
+
     #storDiv {
         margin-bottom: 2em;
     }
@@ -280,8 +309,6 @@
 
     .profilBild {
         display: block;
-        min-width: 80%;
-        min-height: 80%;
         max-width: 80%;
         max-height: 80%;
         margin-right: auto;

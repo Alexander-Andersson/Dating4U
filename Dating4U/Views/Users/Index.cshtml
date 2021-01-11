@@ -11,7 +11,6 @@
     User _user = new User();
 
     bool ProfilRegistrerad = false;
-    //bajs
 }
 
 <!--Tilldela _user värden för den som är inloggad
@@ -91,6 +90,8 @@
     //xmlProfiles friendlist property får värdet av xmlFriendList
     xmlProfile.FriendList = xmlFriendList;
 }
+
+<body>
 
 <!--Om ej inloggad-->
 @if (!SignInManager.IsSignedIn(User))
@@ -291,6 +292,8 @@
     </div>
 }
 
+</body>
+
 <script>
     //Skript för väggmeddelanden
 
@@ -426,6 +429,10 @@
 </script>
 
 <style>
+    body {
+        background-color: white;
+    }
+
     #HeaderText {
         font-weight: normal;
         text-align: center;

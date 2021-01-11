@@ -4,6 +4,8 @@
     ViewData["Title"] = "Edit";
 }
 
+<body>
+
 <h1>Redigera Uppgifter</h1>
 
 <h4>@{@Model.FirstName}</h4>
@@ -81,7 +83,12 @@
     <p><a asp-action="Index">Tillbaka till profil</a></p>
 </div>
 
+    </body>
+
 <style>
+    body {
+        background-color: white;
+    }
 
     input[type=radio] {
         border: 0px;
