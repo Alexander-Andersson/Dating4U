@@ -124,7 +124,7 @@
                     @foreach (var item in friendRequests)
                     {
                         string senderName = item.Sender.FirstName + " " + item.Sender.LastName;
-                        <a id="friendRequestSlider" href="Users/Details/@item.Sender.Id">@senderName &nbsp; &nbsp;</a>
+                        <a id="friendRequestSlider" href="/Users/Details/@item.Sender.Id">@senderName &nbsp; &nbsp;</a>
                     }
                 </p>
             </marquee>
@@ -171,6 +171,7 @@
             <a href="@editProfileUrl">Redigera Profil</a>
             <br />
             <a href="/Identity/Account/Manage">Redigera Inloggningsuppgifter</a>
+            <br />
             <br />
             <button type="button" onclick=ExportProfile()>Spara profil som XML</button>
 
