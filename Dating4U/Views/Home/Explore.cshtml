@@ -120,11 +120,15 @@
     {
         //Check ifall kontot är inaktiverat eller om man ska kunna bli sökt
         //Checkas också ifall den som är inloggad inte visas, profiler som inte blivit setup visas inte heller
-        if (listUser[i].IsInactivated == false && !(listUser[i].Id == _user.Id) && listUser[i].FirstName != null
-            || listUser[i].IsNotSearchable == false && !(listUser[i].Id == _user.Id) && listUser[i].FirstName != null)
+        if (listUser[i].IsInactivated == false && !(listUser[i].Id == _user.Id) && listUser[i].FirstName != null)
         {
+            Console.WriteLine(listUser[i].IsNotSearchable);
             //user objektet läggs till i searchableUsers listan
-            searchableUsers.Add(listUser[i]);
+            if (listUser[i].IsNotSearchable == false)
+            {
+                searchableUsers.Add(listUser[i]);
+                Console.WriteLine(listUser[i].FirstName + listUser[i].LastName + " lades till");
+            }
             //Skriv ut profilen
             string name = listUser[i].FirstName + " " + listUser[i].LastName;
 
@@ -134,6 +138,9 @@
                     <p id="textUsernameExplore @i" class="profileText">@name</p>
                 </a>
             </div>
+        }
+        else {
+            Console.WriteLine(listUser[i].FirstName + listUser[i].LastName + " lades inte till");
         }
     }
 </div>

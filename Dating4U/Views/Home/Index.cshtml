@@ -129,11 +129,20 @@
 
                 }
                 else
-                {
+                {   
                     //Skriv ut profilen
+                    if (User.Identity.Name == null)
+                    {
                     <div class="profil">
-                        <a href="/Users/Details/@Model.Users[i].Id "><img class="profilBild" src="@Model.Users[i].ProfilePicture" /></a>
-                    </div>
+                        <a href="/Identity/Account/Register"><img class="profilBild" src="@Model.Users[i].ProfilePicture" /></a>
+                    </div>         
+                    }
+                    else
+                    {
+                        <div class="profil">
+                            <a href="/Users/Details/@Model.Users[i].Id "><img class="profilBild" src="@Model.Users[i].ProfilePicture" /></a>
+                        </div>
+                    }
                 }
             }
         }
