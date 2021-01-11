@@ -52,7 +52,7 @@
             <div class="form-group">
                 <label>Vill du inte vara sökbar?</label>
                 <p style="font-size:small">Klicka i checkrutan ifall andra användare inte ska kunna hitta dig genom vår sökfunktion.<br />Användare kommer fortfarande kunna hitta din profilsida i Utforska men de kan inte söka efter dig.</p>
-                <input asp-for="IsNotSearchable" class="form-control" />
+                <input asp-for="IsNotSearchable" id="checkBox" class="form-control" />
                 <span asp-validation-for="IsNotSearchable" class="text-danger"></span>
              </div>
             <div class="form-group">
@@ -81,6 +81,12 @@
         height: 1.5em;
         padding: 0;
         align-items: flex-start;
+    }
+    #checkBox {
+        border: 0px;
+        width: 10%;
+        height: 1.5em;
+        padding: 0;
     }
 </style>
 
