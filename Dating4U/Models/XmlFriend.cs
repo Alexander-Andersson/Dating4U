@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace Dating4U.Models
 {
+    //En klass för att mappa om user object till xmlFriend när man sparar ned sin profil till XML
     public class XmlFriend
     {
         public string FirstName { get; set; }

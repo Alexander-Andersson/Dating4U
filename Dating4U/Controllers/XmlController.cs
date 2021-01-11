@@ -15,7 +15,8 @@ namespace Dating4U.Controllers
     {
         [Route("ExportProfile")]
         [HttpPost]
-        //En metod som tar emot ett json-objekt
+        //En metod som tar emot ett json-objekt från javascript functionen ExportProfile.
+        //profile parametern ger värden till xmlProfile och fileName variablarna som används när metoden ExportProfile kallas.
         public void ConvertJson([FromBody] XmlJson profile)
         {
             XmlProfile xmlProfile = profile.Profile;
@@ -24,8 +25,8 @@ namespace Dating4U.Controllers
             ExportProfile(xmlProfile, fileName);
         }
 
-        // POST api/<XmlController>
-        //[HttpPost]
+        
+        //Sparar ner profilen till en XML-fil. Filen ligger i Dating4U mappen.
         public void ExportProfile(XmlProfile profile, string fileName)
         {
             SerializeXML serializer = new SerializeXML();
